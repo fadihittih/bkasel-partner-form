@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>بكاسل — استمارة الشريك وورقة التقييم</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#000000; --muted:#5e5e5e; --mute2:#afafaf; --hairline:#4b4b4b;
+  --canvas:#ffffff; --soft:#efefef; --softer:#f3f3f3; --line:#e2e2e2; --elev:#282828;
+  --ok:#1e5e40; --ok-bg:#eefaf1; --warn:#c0392b; --warn-bg:#fdf1f1; --warn-text:#7b241c;
+  --shadow:0 -3px 14px rgba(0,0,0,.07);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--canvas);color:var(--ink);
+  font-family:"Cairo","Inter","Noto Sans Arabic",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:16px;line-height:1.8;padding-bottom:120px}
+.wrap{max-width:860px;margin:0 auto;padding:0 14px}
+header{background:var(--ink);color:#fff;padding:32px 0 26px;margin-bottom:18px}
+header h1{margin:0 0 8px;font-size:27px;font-weight:700}
+header p{margin:0;opacity:.92;font-size:15px}
+.bar{position:sticky;top:0;z-index:50;background:#fff;
+  border-bottom:1px solid var(--line);padding:9px 0}
+.bar .wrap{display:flex;align-items:center;gap:12px}
+.prog{flex:1;height:8px;background:var(--line);border-radius:999px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--ink);transition:width .35s}
+.pct{font-size:13px;color:var(--muted);font-weight:600;min-width:76px;text-align:left}
+.card{background:var(--canvas);border:1px solid var(--line);border-radius:16px;padding:20px 18px;margin-bottom:16px}
+h2{font-size:20px;color:var(--ink);margin:0 0 6px;border-bottom:1px solid var(--line);padding-bottom:8px;font-weight:700}
+h2 small{display:block;font-size:13px;color:var(--muted);font-weight:400;border:0;margin-top:5px}
+.q{margin:20px 0 0;padding-top:16px;border-top:1px dashed var(--line)}
+.q:first-of-type{border-top:0;padding-top:0}
+.q .t{font-weight:500;font-size:16px;margin-bottom:3px}
+.q .t b{color:var(--warn)}
+.q .h{font-size:13.5px;color:var(--muted);margin-bottom:9px;line-height:1.65}
+input[type=text],textarea,select{width:100%;border:1.5px solid var(--line);border-radius:8px;
+  padding:11px 12px;font-family:inherit;font-size:15.5px;background:var(--softer);color:var(--ink);outline:none}
+textarea{min-height:88px;resize:vertical;line-height:1.75}
+input[type=text]:focus,textarea:focus,select:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(0,0,0,.08)}
+label.opt{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1.5px solid var(--line);
+  border-radius:10px;margin-bottom:7px;cursor:pointer;background:#fff;transition:.15s;font-size:15px}
+label.opt:hover{border-color:var(--ink);background:var(--softer)}
+label.opt input{margin-top:5px;accent-color:var(--ink);width:17px;height:17px;flex:none}
+label.opt.on{border-color:var(--ink);background:var(--soft);font-weight:500}
+.note{background:var(--soft);border-right:5px solid var(--ink);border-radius:8px;padding:12px 14px;
+  margin:12px 0;font-size:14.5px;color:var(--muted)}
+.note.red{background:var(--warn-bg);border-right-color:var(--warn);color:var(--warn-text)}
+.note.grn{background:var(--ok-bg);border-right-color:var(--ok);color:var(--ok)}
+.tbl{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
+.tbl th{background:var(--ink);color:#fff;padding:9px 6px;font-weight:500;font-size:13px;text-align:center}
+.tbl td{border:1px solid var(--line);padding:6px;vertical-align:middle}
+.tbl tr:nth-child(even) td{background:var(--softer)}
+.tbl input[type=text]{padding:7px 8px;font-size:14px;border-width:1px}
+.tbl select{padding:7px 4px;font-size:14px;border-width:1px;text-align:center}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -6px;padding:0 6px}
+.sc td:first-child{text-align:right;font-weight:600;font-size:13.5px;min-width:190px;background:#fff!important}
+.sc select{background:var(--soft);min-width:62px}
+.sc .res{font-weight:700;color:var(--ink);text-align:center;font-size:15px;background:var(--soft)!important}
+.sc .rnk{text-align:center;font-weight:700;color:var(--ok);background:var(--ok-bg)!important}
+.desc{font-size:12.5px;color:var(--muted);font-weight:400;line-height:1.55;display:block;margin-top:3px}
+.foot{position:fixed;bottom:0;right:0;left:0;background:#fff;border-top:1px solid var(--line);
+  padding:11px 0;z-index:60;box-shadow:var(--shadow)}
+.foot .wrap{display:flex;gap:9px;align-items:center}
+button{font-family:inherit;font-weight:500;font-size:15px;border:0;border-radius:999px;padding:13px 16px;cursor:pointer;transition:.15s}
+.b1{background:var(--ink);color:#fff;flex:1}
+.b1:hover{background:var(--elev)}
+.b2{background:#fff;color:var(--ink);border:1.5px solid var(--line);padding:12px 14px}
+.b2:hover{border-color:var(--ink)}
+.bw{background:#25D366;color:#fff;flex:1}
+.bw:hover{background:#1eb356}
+
+.svc{border:1.5px solid var(--line);border-radius:12px;padding:13px 13px 10px;margin-bottom:12px;background:#fff}
+.svc.full{border-color:var(--ink);background:var(--softer)}
+.sh{display:flex;gap:9px;align-items:flex-start;font-weight:700;font-size:15.5px;color:var(--ink);line-height:1.5}
+.sh .num{background:var(--ink);color:#fff;border-radius:7px;min-width:25px;height:25px;display:flex;
+  align-items:center;justify-content:center;font-size:13px;flex:none;margin-top:2px}
+.sd{font-size:13px;color:var(--muted);line-height:1.6;margin:7px 0 11px}
+.row{display:flex;align-items:center;gap:9px;padding:6px 0;border-top:1px dashed var(--line)}
+.row:first-child{border-top:0}
+.row span{flex:1;font-size:13.5px;line-height:1.45}
+.row span i{display:block;font-style:normal;font-size:11.5px;color:var(--muted)}
+.row select{width:78px;flex:none;background:var(--softer);border:1.5px solid var(--line);
+  border-radius:9px;padding:9px 6px;font-size:15px;font-weight:700;text-align:center;color:var(--ink)}
+.row select.set{background:var(--soft);border-color:var(--ink)}
+.sf{margin-top:9px;padding-top:9px;border-top:1.5px solid var(--line);display:flex;
+  justify-content:space-between;font-size:13.5px;color:var(--muted)}
+.sf b{color:var(--ink);font-size:16px}
+.sf .rk b{color:var(--ok)}
+
+.hide{display:none!important}
+#done{text-align:center;padding:26px 18px}
+#done h2{border:0;font-size:23px}
+.steps{text-align:right;max-width:520px;margin:16px auto 0}
+.steps li{margin-bottom:11px;font-size:15.5px}
+.err{border-color:var(--warn)!important;background:#fff8f8}
+.errmsg{color:var(--warn);font-size:13.5px;font-weight:600;margin-top:6px;display:none}
+.miss{background:var(--warn-bg);border-right:5px solid var(--warn);border-radius:8px;padding:11px 14px;
+  margin:10px 0;font-size:14px;color:var(--warn-text);font-weight:600}
+@media(max-width:520px){
+  header h1{font-size:22px} h2{font-size:17px} body{font-size:15px}
+  .card{padding:16px 13px} .sc td:first-child{min-width:150px;font-size:12.5px}
+  .foot button{font-size:14px;padding:12px 10px}
+}
+</style>
+</head>
+<body>
+<noscript><div style="padding:40px 16px;text-align:center;font-family:sans-serif;font-size:16px;direction:rtl">يرجى تفعيل JavaScript لعرض هذا النموذج وتعبئته.</div></noscript>
+<div class="bar"><div class="wrap">
+  <div class="prog"><i id="pi"></i></div><div class="pct" id="pt">0%</div>
+</div></div>
+<header><div class="wrap">
+  <h1>بكاسل — استمارة الشريك</h1>
+  <p>عبّيها لحالك · بصدق كامل · بدها 30–40 دقيقة</p>
+</div></header>
+<div class="wrap" id="app"></div>
+<div class="wrap" id="after"></div>
+<div class="foot"><div class="wrap" id="foot"></div></div>
+<script>
+/* ============ إعداد: بدّل الرقم برقم فادي بصيغة دولية بلا + ولا أصفار ============ */
+const FADI_WA = "962790266542";   // مثال: 962791234567
+const FADI_NAME = "فادي";
+/* ============================================================================= */
+
+const CRIT=[["حجم الطلب في السوق",.25],["العائد المالي / حجم الصفقة",.25],
+["ملاءمة خلفية البرمجة",.20],["سرعة الوصول لأول عميل",.15],["صعوبة التقليد (حصانة تنافسية)",.15]];
+
+const SVC=[{"n": "أتمتة سير العمل بالذكاء الاصطناعي", "d": "ربط أنظمة الشركة (CRM، بريد، واتساب، محاسبة) بسير عمل آلي يقلل العمل اليدوي: فرز الطلبات، إدخال البيانات، التقارير التلقائية."}, {"n": "وكلاء ذكاء اصطناعي للمبيعات وخدمة العملاء", "d": "بناء مساعد ذكي مدرَّب على بيانات الشركة (RAG) يرد على العملاء، يؤهّل العملاء المحتملين، ويحوّل الجاهزين منهم لفريق المبيعات."}, {"n": "تحسين الظهور في محركات الذكاء الاصطناعي (GEO/AEO)", "d": "جعل العلامة التجارية تظهر كإجابة داخل ChatGPT و Perplexity و Gemini و Google AI Overviews عبر بناء الكيانات والسكيما والاستشهادات."}, {"n": "SEO التقني + استراتيجية المحتوى", "d": "تحسين البنية التقنية للموقع (السرعة، الفهرسة، Core Web Vitals) + خطة محتوى تستهدف نية الشراء وليس مجرد الزيارات."}, {"n": "إدارة الإعلانات المدفوعة (Meta / Google / TikTok)", "d": "تشغيل حملات أداء مربوطة بالمبيعات الفعلية مع تتبّع تحويلات دقيق ولوحة ربحية واضحة لكل قناة."}, {"n": "تحسين معدل التحويل (CRO) والاختبارات", "d": "رفع نسبة الزوار الذين يشترون عبر تحليل السلوك وتجارب A/B — يزيد الأرباح بدون زيادة ميزانية الإعلان."}, {"n": "بناء وتشغيل أنظمة CRM و RevOps", "d": "تركيب وضبط نظام إدارة علاقات العملاء وربط التسويق بالمبيعات: مراحل الصفقات، التنبيهات، لوحات القيادة، وتقارير الإيرادات."}, {"n": "تسويق دورة حياة العميل والبريد والأتمتة", "d": "سلاسل رسائل آلية (ترحيب، سلة متروكة، استرجاع) — أعلى عائد لكل دولار في التسويق الرقمي."}, {"n": "واتساب للأعمال والتجارة المحادثية", "d": "ربط WhatsApp Business API بالمتجر والـCRM: ردود آلية، إشعارات طلبات، استرجاع سلات، ودعم مباشر — القناة الأقوى في السوق العربي."}, {"n": "بناء وتحسين المتاجر الإلكترونية", "d": "إطلاق متجر احترافي على Shopify/سلة/زد أو مخصص، مع تحسين رحلة الشراء والدفع والشحن ومتابعة الأداء."}, {"n": "مواقع وصفحات هبوط عالية التحويل", "d": "تصميم وبرمجة مواقع وصفحات مبيعات سريعة ومهيأة للتحويل — البوابة الأسهل لأول عميل واستخدامها كمدخل لبيع خدمات أكبر."}, {"n": "التحليلات ونمذجة البيانات وإسناد المبيعات", "d": "بناء لوحات قيادة تربط كل دينار إنفاق تسويقي بالإيراد الفعلي، وتوحيد بيانات المصادر المتفرقة في مصدر حقيقة واحد."}, {"n": "توليد العملاء المحتملين للشركات (B2B Outbound)", "d": "بناء آلة عملاء محتملين: قوائم مستهدفة، بنية بريد بارد سليمة، تسلسلات متعددة القنوات، وحجز اجتماعات مؤهَّلة."}, {"n": "الفيديو القصير والمحتوى المرئي بالذكاء الاصطناعي", "d": "إنتاج ريلز وتيك توك بكميات كبيرة بمساعدة أدوات AI للتحرير والترجمة والاستنساخ الصوتي — الطلب هائل والتكلفة منخفضة."}, {"n": "الهوية البصرية وبناء العلامة التجارية", "d": "تصميم الهوية الكاملة (شعار، ألوان، خطوط، دليل استخدام، نبرة صوت) — مدخل ممتاز للعملاء الجدد لكن عائده مشروعي."}, {"n": "إدارة حسابات التواصل الاجتماعي (اشتراك شهري)", "d": "الخدمة الأكثر طلبًا والأسهل بيعًا محليًا، لكنها الأقل ربحية والأكثر منافسة — تُستخدم كباب دخول لا كأساس للشركة."}, {"n": "أنظمة الاحتفاظ بالعملاء وبرامج الولاء", "d": "تقليل نسبة فقدان العملاء عبر تحليل السلوك، تصنيف الشرائح (RFM)، برامج نقاط، وحملات استرجاع آلية."}, {"n": "تسويق وتحسين التطبيقات (ASO + Growth)", "d": "رفع ترتيب التطبيق في المتاجر، تحسين صفحة التطبيق، وربط حملات التثبيت بالإيراد داخل التطبيق."}, {"n": "تمكين الشركات وتدريبها على أدوات الذكاء الاصطناعي", "d": "ورش وتدريب عملي لفرق الشركات على استخدام AI في عملهم اليومي + كتيّب إجراءات مخصص — عائد عالٍ لكل ساعة وباب لعقود أتمتة."}, {"n": "خدمة مُنتَجة أو Micro-SaaS خاصة بكم", "d": "تحويل أكثر خدمة تكرّرت عندكم إلى أداة/اشتراك يُباع بلا وقت إضافي — الطريق الوحيد لكسر سقف 'الدخل مقابل الساعة'."}];
+
+const F=[
+{s:"بياناتك",note:{t:"ليش هالاستمارة؟ لأننا على وشك نبني إشي مع بعض لسنين، وأكثر شي بيفشّل شركات الشركاء مش السوق — بل افتراضات ما حدا قالها بصوت عالي. واحد افترض إنو التاني رح يعطي 30 ساعة بالأسبوع، والتاني كان ناوي 8.",c:""},
+ note2:{t:"قاعدة وحدة: الجواب المريح ما إله قيمة. لو ترددت تكتب إشي لأنه ممكن يزعج حدا فينا — فهذا بالضبط اللي لازم تكتبه.",c:"red"},
+ q:[{id:"name",t:"اسمك",ty:"text",req:1},{id:"date",t:"تاريخ اليوم",ty:"text",ph:"مثال: 18/8/2026"}]},
+
+{s:"1 · مين أنت تقنيًا (الواقع مش الشهادة)",q:[
+ {id:"q1",t:"شو التخصص الجامعي وسنة التخرج المتوقعة؟",ty:"text",req:1},
+ {id:"q2",t:"اكتب أكبر تلات أشياء بنيتها بإيدك فعليًا.",h:"مشروع تخرج، تطبيق، موقع، سكربت، بوت — أي إشي اشتغل. اذكر التقنية وكم أخد وقت.",ty:"area",req:1},
+ {id:"q3",t:"قيّم حالك بصدق من 5 بكل بند.",h:"1 = ما جربته · 3 = بقدر بمساعدة يوتيوب · 5 = بقدر أبنيه لعميل وأتحمل مسؤوليته",ty:"skills",req:1},
+ {id:"q4",t:"شو المهارة اللي بتستمتع فيها لدرجة إنك بتعملها بلا مقابل؟",h:"هاي غالبًا أفضل مؤشر على دورك المناسب — أكثر من أي تقييم رقمي.",ty:"area",req:1}]},
+
+{s:"2 · وقتك الحقيقي",note:{t:"⚠️ هذا أخطر سؤال بالاستمارة. الرقم المتفائل هون رح ينبنى عليه جدول كامل، وانهياره بعد شهرين رح ينحسب عليك. اكتب الرقم اللي بتقدر تلتزم فيه بأسوأ أسبوع، مش بأحسنه.",c:"red"},q:[
+ {id:"q5",t:"كم ساعة أسبوعيًا بتقدر تلتزم فيها فعليًا خلال الـ6 شهور الجاية؟",ty:"radio",req:1,
+  o:["أقل من 5 ساعات","5 – 10 ساعات","10 – 20 ساعة","20 – 35 ساعة","أكثر من 35 ساعة (شبه تفرغ)"]},
+ {id:"q6",t:"بأي أوقات من الأسبوع بتكون متاح فعليًا؟",h:"حدد أيام وساعات — رح نبني إيقاع الاجتماعات عليها.",ty:"area",req:1},
+ {id:"q7",t:"شو اللي ممكن يقلّل وقتك خلال الـ6 شهور الجاية؟",h:"فيك تختار أكثر من إشي.",ty:"check",
+  o:["دراسة / امتحانات / مشروع تخرج","وظيفة حالية أو تدريب","بحث جدي عن وظيفة بدوام كامل","التزام عائلي أو صحي","خدمة عسكرية أو سفر","لا شي متوقع"]},
+ {id:"q8",t:"لو إجتك وظيفة بدوام كامل براتب منيح بعد 3 شهور — بصراحة تامة، شو رح تعمل؟",ty:"radio",req:1,
+  o:["أرفضها وأكمّل معكم","أقبلها وأكمّل معكم بساعات أقل — ورح أخبركم فورًا","أقبلها وأنسحب من الشراكة","ما بعرف — بعتمد على وضع الشركة وقتها"]},
+ {id:"q9",t:"اشرح إجابتك السابقة بجملتين.",ty:"area",req:1}]},
+
+{s:"3 · المال",q:[
+ {id:"q10",t:"كم بتقدر تحط من مالك الخاص بالشركة خلال الـ6 شهور الجاية؟",h:"ما في جواب غلط. صفر جواب مقبول تمامًا — بس لازم نعرفه هلأ مش بعدين.",ty:"radio",req:1,
+  o:["ما بقدر أحط إشي حاليًا","لحد 100 دولار","100 – 300 دولار","300 – 700 دولار","أكثر من 700 دولار"]},
+ {id:"q11",t:"كم شهر بتقدر تكمّل بلا أي دخل من الشركة قبل ما تضطر تدوّر على بديل؟",ty:"radio",req:1,
+  o:["أقل من 3 شهور","3 – 6 شهور","6 – 12 شهر","أكثر من سنة"]},
+ {id:"q12",t:"شو الحد الأدنى الشهري اللي لو وصلته من الشركة بتعتبرها \"نجحت\" بالنسبة إلك؟",ty:"text",req:1}]},
+
+{s:"4 · شبكة معارفك",note:{t:"✅ أهم قسم على الإطلاق. أول عملائنا مش رح ييجوا من إعلان ولا من موقع — رح ييجوا من ناس منعرفهم بالاسم. قيمة شركتنا اليوم بتساوي مجموع هالقوائم الخمس.",c:"grn"},q:[
+ {id:"q13",t:"اكتب كل شخص بتعرفه شخصيًا وعنده نشاط تجاري، أو بيشتغل بمكان بيقدر يوصلك لصاحب القرار.",
+  h:"أهل، أقارب، أصحاب، جيران، زملاء تدريب، دكاترة جامعة، أصحاب محلات بتتعامل معها. لا تفلتر ولا تحكم — اكتب الاسم ولو حسبته مش مناسب. عشر أسماء هو الحد الأدنى المطلوب منك.",ty:"net",req:1},
+ {id:"q14",t:"من بين اللي كتبتهم: مين بتقدر تتصل فيه بكرا بلا حرج وتطلب منه 15 دقيقة؟",ty:"area",req:1}]},
+
+{s:"5 · البيع",note:{t:"خمس مبرمجين بلا شخص واحد مسؤوليته الوحيدة إحضار العملاء = خمس أشخاص بينتظروا الهاتف يرن. هذا الدور مش أقل قيمة من البرمجة — هو الأصعب والأهم بأول سنة.",c:""},q:[
+ {id:"q15",t:"شو شعورك تجاه إنك تتصل بشخص ما بتعرفه وتعرض عليه خدمة؟",ty:"radio",req:1,
+  o:["بستمتع فيها فعلًا","ما بمانع، بقدر أعملها بلا انزعاج","مش مرتاح بس مستعد أتعلم وأجرب","بفضّل أتجنبها تمامًا"]},
+ {id:"q16",t:"سبق وأقنعت حدا بإشي أو بعت إشي (ولو بسيط)؟ احكي الموقف.",ty:"area",req:1},
+ {id:"q17",t:"بترشّح حالك لدور مسؤول المبيعات والعلاقات (بلا تنفيذ تقني بأول شهور)؟",ty:"radio",req:1,
+  o:["نعم، برشّح حالي","نعم بس بالمشاركة مع شريك تاني","لأ، بفضّل التنفيذ التقني","ما بعرف بعد"]},
+ {id:"q18",t:"لو ما رشّح حدا حاله لهذا الدور — شو اقتراحك للحل؟",ty:"area",req:1}]},
+
+{s:"6 · اللغة والتواصل",q:[
+ {id:"q19",t:"مستواك بالإنجليزي:",ty:"eng",req:1},
+ {id:"q20",t:"سبق واشتغلت مع عميل أو جهة خارج بلدك؟ Upwork أو غيره؟",ty:"area"}]},
+
+{s:"7 · الدافع والتوقعات",q:[
+ {id:"q21",t:"ليش بدك هالشركة تحديدًا؟ شو اللي بدك ياه منها شخصيًا؟",
+  h:"المال؟ الاستقلال؟ التعلّم؟ إثبات الذات؟ الهروب من فكرة الوظيفة؟ ما في جواب معيب — بس اختلاف دوافعنا لازم يكون معروف مش مخفي.",ty:"area",req:1},
+ {id:"q22",t:"بعد سنة من اليوم، شو لازم يكون تحقق حتى تقول \"كان قرار صح\"؟",ty:"area",req:1},
+ {id:"q23",t:"شو اللي بيخليك تنسحب؟ اكتب خطك الأحمر بوضوح.",
+  h:"مثال: لو مرقت 6 شهور بلا أي دخل · لو حسّيت إني بشتغل لحالي · لو ما تعلمت إشي جديد.",ty:"area",req:1},
+ {id:"q24",t:"شو أكثر إشي بيخوّفك بهالشراكة؟",h:"اكتبه صراحةً. المخاوف المكتوبة بتنّدار؛ المخاوف الصامتة بتنفجر بعدين.",ty:"area",req:1}]},
+
+{s:"8 · نحنا كفريق",q:[
+ {id:"q25",t:"مين بتشوفه الأنسب لدور المدير التنفيذي (اللي بيحسم عند الخلاف)؟ وليش؟",
+  h:"بتقدر ترشّح حالك. الدور مش امتياز — هو مسؤولية الحسم لما يطوّل النقاش.",ty:"area",req:1},
+ {id:"q26",t:"شو الدور اللي بدك ياه إنت، وشو الدور اللي بتظن إنك رح تأديه فعليًا؟",ty:"area",req:1},
+ {id:"q27",t:"صار بيناتنا خلاف سابق بشغل مشترك؟ كيف انتهى؟",ty:"area"},
+ {id:"q28",t:"لو انسحب حدا فينا بعد 3 شهور، شو بتشوفه عادل بخصوص حصته؟",ty:"area",req:1},
+ {id:"q29",t:"أي إشي تاني بدك تقوله وما سألت عنه الاستمارة؟",ty:"area"}]},
+
+{s:"9 · ورقة تقييم الخدمات",
+ note:{t:"إحنا رح نختار على شو نبني الشركة. بدنا رأيك إنت — مش موافقتك على رأي غيري. لهيك ما في درجات جاهزة قدامك. قيّم كل خدمة من 1 لـ 10 على المعايير الخمسة، والنتيجة والترتيب بينحسبوا لحالهم.",c:"grn"},
+ note2:{t:"مقياس الدرجات: 1-3 ضعيف · 4-6 متوسط · 7-8 قوي · 9-10 ممتاز. حاول ما تحط 7 لكل إشي — التمرين بيفيد لما تفرّق. ولو ما بتعرف خدمة، حط تقديرك وكمّل.",c:"red"},
+ q:[{id:"score",t:"قيّم الـ20 خدمة",ty:"score",req:1}]}
+];
+
+const SKILLS=["برمجة الويب (Frontend)","برمجة الخادم (Backend) وقواعد البيانات","Python وأتمتة المهام",
+"التعامل مع APIs و Webhooks","أدوات الأتمتة (n8n / Make / Zapier)","استخدام الذكاء الاصطناعي برمجيًا (APIs)",
+"قواعد البيانات و SQL","التصميم وواجهات المستخدم","التسويق الرقمي والإعلانات","تحليل البيانات ولوحات التقارير",
+"الكتابة والمحتوى بالعربي","الحكي والإقناع قدام الناس"];
+const ENG=["القراءة والفهم التقني","الكتابة (إيميل ومقترح لعميل)","المحادثة (اجتماع مع عميل أجنبي)"];
+const ENGL=["ضعيف","متوسط","جيد","ممتاز"];
+const D={};
+const DRAFT_KEY='bkasel_autosave';
+let doneShown=false;
+let _saveT=null;
+function hasData(){return Object.keys(D).some(k=>{const v=D[k];if(v==null)return false;if(Array.isArray(v))return v.some(x=>x&&(typeof x==='object'?Object.values(x).some(y=>y!==''&&y!==null):!!x));if(typeof v==='object')return Object.values(v).some(x=>!!x);return String(v).trim().length>0})}
+function autosave(){
+  clearTimeout(_saveT);
+  _saveT=setTimeout(()=>{try{localStorage.setItem(DRAFT_KEY,JSON.stringify(D))}catch(e){}},500);
+}
+window.addEventListener('beforeunload',e=>{
+  if(!doneShown&&hasData()){e.preventDefault();e.returnValue=''}
+});
+
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function el(h){const d=document.createElement('div');d.innerHTML=h.trim();return d.firstElementChild}
+
+function render(){
+  const app=document.getElementById('app');
+  const frag=document.createDocumentFragment();
+  F.forEach((sec,si)=>{
+    const c=document.createElement('div');c.className='card';
+    let h='<h2>'+esc(sec.s)+'</h2>';
+    if(sec.note)h+='<div class="note '+(sec.note.c||'')+'">'+esc(sec.note.t)+'</div>';
+    if(sec.note2)h+='<div class="note '+(sec.note2.c||'')+'">'+esc(sec.note2.t)+'</div>';
+    c.innerHTML=h;
+    sec.q.forEach(q=>{c.appendChild(qbox(q))});
+    frag.appendChild(c);
+  });
+  app.appendChild(frag);
+  document.getElementById('foot').innerHTML=
+    '<button class="b1" id="gen">إنهاء وتنزيل الإجابات</button>'+
+    '<button class="b2" id="sv">حفظ مسودة</button>'+
+    '<button class="b2" id="ld">استعادة</button>';
+  document.getElementById('gen').onclick=finish;
+  document.getElementById('sv').onclick=saveDraft;
+  document.getElementById('ld').onclick=loadDraft;
+  prog();
+}
+
+function qbox(q){
+  const w=document.createElement('div');w.className='q';w.id='box_'+q.id;
+  let h='<div class="t">'+esc(q.t)+(q.req?' <b>*</b>':'')+'</div>';
+  if(q.h)h+='<div class="h">'+esc(q.h)+'</div>';
+  w.innerHTML=h;
+  let n;
+  if(q.ty==='text'){n=el('<input type="text" id="'+q.id+'" placeholder="'+(q.ph||'')+'">');n.oninput=e=>{D[q.id]=e.target.value;prog()}}
+  else if(q.ty==='area'){n=el('<textarea id="'+q.id+'"></textarea>');n.oninput=e=>{D[q.id]=e.target.value;prog()}}
+  else if(q.ty==='radio'||q.ty==='check'){
+    n=document.createElement('div');
+    q.o.forEach((o,i)=>{
+      const l=el('<label class="opt"><input type="'+(q.ty==='radio'?'radio':'checkbox')+'" name="'+q.id+'" value="'+esc(o)+'"><span>'+esc(o)+'</span></label>');
+      l.querySelector('input').onchange=()=>{
+        if(q.ty==='radio'){D[q.id]=o;n.querySelectorAll('label').forEach(x=>x.classList.remove('on'));l.classList.add('on')}
+        else{D[q.id]=D[q.id]||[];const a=D[q.id];const k=a.indexOf(o);k<0?a.push(o):a.splice(k,1);l.classList.toggle('on')}
+        prog()};
+      n.appendChild(l)});
+  }
+  else if(q.ty==='skills'){
+    D[q.id]=SKILLS.map(()=>({v:"",r:""}));
+    let t='<div class="scroll"><table class="tbl"><tr><th>المهارة</th><th>من 5</th><th>اشتغلت فيها بمشروع حقيقي؟</th></tr>';
+    SKILLS.forEach((s,i)=>{t+='<tr><td style="text-align:right;font-weight:600">'+esc(s)+'</td>'+
+      '<td><select data-k="v" data-i="'+i+'"><option value="">—</option>'+[1,2,3,4,5].map(x=>'<option>'+x+'</option>').join('')+'</select></td>'+
+      '<td><select data-k="r" data-i="'+i+'"><option value="">—</option><option>نعم</option><option>لأ</option></select></td></tr>'});
+    t+='</table></div>';n=el(t);
+    n.querySelectorAll('select').forEach(s=>s.onchange=e=>{D[q.id][+e.target.dataset.i][e.target.dataset.k]=e.target.value;prog()});
+  }
+  else if(q.ty==='eng'){
+    D[q.id]=ENG.map(()=>"");
+    let t='<div class="scroll"><table class="tbl"><tr><th>المهارة</th>'+ENGL.map(x=>'<th>'+x+'</th>').join('')+'</tr>';
+    ENG.forEach((s,i)=>{t+='<tr><td style="text-align:right;font-weight:600">'+esc(s)+'</td>'+
+      ENGL.map(x=>'<td style="text-align:center"><input type="radio" name="eng'+i+'" value="'+x+'" data-i="'+i+'" style="width:19px;height:19px;accent-color:#000"></td>').join('')+'</tr>'});
+    t+='</table></div>';n=el(t);
+    n.querySelectorAll('input').forEach(s=>s.onchange=e=>{D[q.id][+e.target.dataset.i]=e.target.value;prog()});
+  }
+  else if(q.ty==='net'){
+    D[q.id]=Array.from({length:12},()=>({n:"",b:"",s:"",p:""}));
+    let t='<div class="scroll"><table class="tbl"><tr><th>#</th><th>الاسم</th><th>النشاط / مكان العمل</th><th>صلتك فيه</th><th>قوة العلاقة</th></tr>';
+    for(let i=0;i<12;i++){t+='<tr><td style="text-align:center;font-weight:700;color:var(--muted)">'+(i+1)+'</td>'+
+      ['n','b','s'].map(k=>'<td><input type="text" data-k="'+k+'" data-i="'+i+'"></td>').join('')+
+      '<td><select data-k="p" data-i="'+i+'"><option value="">—</option>'+[1,2,3,4,5].map(x=>'<option>'+x+'</option>').join('')+'</select></td></tr>'}
+    t+='</table></div>';n=el(t);
+    n.querySelectorAll('input,select').forEach(s=>s['on'+(s.tagName==='INPUT'?'input':'change')]=e=>{
+      D[q.id][+e.target.dataset.i][e.target.dataset.k]=e.target.value;prog()});
+  }
+  else if(q.ty==='score'){
+    D[q.id]=SVC.map(()=>[null,null,null,null,null]);
+    n=document.createElement('div');
+    SVC.forEach((sv,i)=>{
+      const card=document.createElement('div');card.className='svc';card.id='svc'+i;
+      let h='<div class="sh"><span class="num">'+(i+1)+'</span><span>'+esc(sv.n)+'</span></div>'+
+            '<div class="sd">'+esc(sv.d)+'</div><div class="rows">';
+      CRIT.forEach((c,j)=>{h+='<div class="row"><span>'+c[0]+'<i>الوزن '+Math.round(c[1]*100)+'%</i></span>'+
+        '<select data-i="'+i+'" data-j="'+j+'"><option value="">—</option>'+
+        [1,2,3,4,5,6,7,8,9,10].map(x=>'<option>'+x+'</option>').join('')+'</select></div>'});
+      h+='</div><div class="sf"><span>النتيجة المرجّحة: <b id="res'+i+'">—</b></span>'+
+         '<span class="rk">ترتيبك: <b id="rnk'+i+'">—</b></span></div>';
+      card.innerHTML=h;n.appendChild(card);
+    });
+    n.querySelectorAll('select').forEach(sl=>sl.onchange=e=>{
+      const t=e.target;t.classList.toggle('set',!!t.value);
+      D[q.id][+t.dataset.i][+t.dataset.j]=t.value?+t.value:null;calc();prog()});
+  }
+  w.appendChild(n);
+  w.appendChild(el('<div class="errmsg" id="err_'+q.id+'">هذا السؤال مطلوب</div>'));
+  return w;
+}
+
+function calc(){
+  const S=D.score;const tot=[];
+  S.forEach((r,i)=>{
+    const full=r.every(x=>x!==null&&x!=='');
+    const v=full?r.reduce((a,x,j)=>a+x*CRIT[j][1],0):null;
+    tot.push(v);
+    document.getElementById('res'+i).textContent=v===null?'—':v.toFixed(2);
+    document.getElementById('svc'+i).classList.toggle('full',full);
+  });
+  const valid=tot.filter(x=>x!==null).slice().sort((a,b)=>b-a);
+  tot.forEach((v,i)=>{document.getElementById('rnk'+i).textContent=v===null?'—':(valid.indexOf(v)+1)});
+}
+
+function allQ(){const a=[];F.forEach(s=>s.q.forEach(q=>a.push(q)));return a}
+
+function filled(q){
+  const v=D[q.id];
+  if(q.ty==='skills')return v&&v.filter(x=>x.v).length>=8;
+  if(q.ty==='eng')return v&&v.filter(Boolean).length===3;
+  if(q.ty==='net')return v&&v.filter(x=>x.n&&x.n.trim()).length>=10;
+  if(q.ty==='score')return v&&v.filter(r=>r.every(x=>x!==null&&x!=='')).length===SVC.length;
+  if(q.ty==='check')return v&&v.length>0;
+  return v&&String(v).trim().length>0;
+}
+
+function prog(){
+  const qs=allQ().filter(q=>q.req);const n=qs.filter(filled).length;
+  const p=Math.round(n/qs.length*100);
+  document.getElementById('pi').style.width=p+'%';
+  document.getElementById('pt').textContent=p+'%  ('+n+'/'+qs.length+')';
+  autosave();
+}
+
+function finish(){
+  const bad=allQ().filter(q=>q.req&&!filled(q));
+  document.querySelectorAll('.errmsg').forEach(e=>e.style.display='none');
+  document.querySelectorAll('.miss').forEach(e=>e.remove());
+  if(bad.length){
+    bad.forEach(q=>{const e=document.getElementById('err_'+q.id);if(e){
+      e.style.display='block';
+      e.textContent = q.ty==='net' ? 'لازم 10 أسماء على الأقل — هذا القسم اللي بينتج عملاء'
+        : q.ty==='score' ? 'لازم تقيّم الـ20 خدمة كاملة على المعايير الخمسة'
+        : q.ty==='skills' ? 'قيّم 8 مهارات على الأقل'
+        : 'هذا السؤال مطلوب';}});
+    const m=el('<div class="miss">في '+bad.length+' سؤال ناقص. الأسئلة الناقصة معلّمة بالأحمر فوق.</div>');
+    document.getElementById('after').appendChild(m);
+    const f=document.getElementById('box_'+bad[0].id);
+    if(f)f.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  const md=buildMD();
+  dl(md,safeName());
+  try{localStorage.removeItem(DRAFT_KEY)}catch(e){}
+  showDone();
+}
+
+function cell(s){return String(s==null?'':s).replace(/\|/g,'\\|').replace(/\n/g,' ')}
+
+function buildMD(){
+  const L=[];
+  L.push('# بكاسل — استمارة الشريك');L.push('');
+  L.push('**الاسم:** '+(D.name||''));
+  L.push('**التاريخ:** '+(D.date||''));
+  L.push('');L.push('---');L.push('');
+  F.forEach(sec=>{
+    if(sec.s==='بياناتك')return;
+    L.push('## '+sec.s);L.push('');
+    sec.q.forEach(q=>{
+      L.push('**'+q.t+'**');L.push('');
+      const v=D[q.id];
+      if(q.ty==='skills'){
+        L.push('| المهارة | من 5 | مشروع حقيقي؟ |');L.push('|---|:---:|:---:|');
+        SKILLS.forEach((s,i)=>L.push('| '+s+' | '+(v[i].v||'—')+' | '+(v[i].r||'—')+' |'));
+      }else if(q.ty==='eng'){
+        L.push('| المهارة | المستوى |');L.push('|---|:---:|');
+        ENG.forEach((s,i)=>L.push('| '+s+' | '+(v[i]||'—')+' |'));
+      }else if(q.ty==='net'){
+        L.push('| # | الاسم | النشاط | الصلة | قوة العلاقة |');L.push('|:---:|---|---|---|:---:|');
+        let k=0;v.forEach(r=>{if(r.n&&r.n.trim()){k++;L.push('| '+k+' | '+cell(r.n)+' | '+cell(r.b||'')+' | '+cell(r.s||'')+' | '+cell(r.p||'')+' |')}});
+        L.push('');L.push('*مجموع الأسماء: '+k+'*');
+      }else if(q.ty==='score'){
+        const rows=SVC.map((s,i)=>({n:s.n,r:v[i],t:v[i].reduce((a,x,j)=>a+x*CRIT[j][1],0)}));
+        const sorted=rows.slice().sort((a,b)=>b.t-a.t);
+        L.push('| الترتيب | الخدمة | '+CRIT.map(c=>c[0]).join(' | ')+' | النتيجة |');
+        L.push('|:---:|---|'+CRIT.map(()=>':---:').join('|')+'|:---:|');
+        sorted.forEach((r,i)=>L.push('| '+(i+1)+' | '+r.n+' | '+r.r.join(' | ')+' | '+r.t.toFixed(2)+' |'));
+        L.push('');
+        L.push('**أعلى 5 خدمات عندي:** '+sorted.slice(0,5).map((r,i)=>(i+1)+') '+r.n).join(' · '));
+        L.push('');
+        L.push('**أدنى 3 خدمات عندي:** '+sorted.slice(-3).map(r=>r.n).join(' · '));
+      }else if(q.ty==='check'){
+        (v&&v.length?v:['—']).forEach(x=>L.push('- '+x));
+      }else{
+        L.push((v&&String(v).trim())?String(v).split('\n').map(x=>'> '+x).join('\n'):'> —');
+      }
+      L.push('');
+    });
+    L.push('---');L.push('');
+  });
+  L.push('*تم التعبئة عبر نموذج بكاسل.*');
+  return L.join('\n');
+}
+
+/* كروم بيحذف الأحرف العربية من اسم ملف التنزيل، فمنحوّلها لحروف لاتينية */
+const AR2LAT={'ا':'a','أ':'a','إ':'i','آ':'a','ب':'b','ت':'t','ث':'th','ج':'j','ح':'h','خ':'kh',
+'د':'d','ذ':'th','ر':'r','ز':'z','س':'s','ش':'sh','ص':'s','ض':'d','ط':'t','ظ':'z','ع':'a','غ':'gh',
+'ف':'f','ق':'q','ك':'k','ل':'l','م':'m','ن':'n','ه':'h','ة':'a','و':'w','ؤ':'o','ي':'y','ى':'a','ئ':'e','ء':'','\u0640':''};
+function translit(str){
+  return String(str||'').split('').map(ch=>{
+    if(AR2LAT[ch]!==undefined)return AR2LAT[ch];
+    if(/[\u064B-\u0652]/.test(ch))return '';
+    if(/[A-Za-z0-9]/.test(ch))return ch;
+    if(/\s|[-_]/.test(ch))return '-';
+    return '';
+  }).join('').replace(/-+/g,'-').replace(/^-|-$/g,'');
+}
+function safeName(){
+  const n=translit(D.name)||'Partner';
+  return 'Bkasel-'+n+'.md';
+}
+function dl(txt,fn){
+  const b=new Blob(['﻿'+txt],{type:'text/markdown;charset=utf-8'});
+  const u=URL.createObjectURL(b);const a=document.createElement('a');
+  a.href=u;a.download=fn;document.body.appendChild(a);a.click();
+  setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(u)},900);
+}
+
+function saveDraft(){
+  dl(JSON.stringify(D),'Bkasel-draft.json');
+  alert('انحفظت المسودة كملف. لما ترجع، اضغط "استعادة" واختار نفس الملف.');
+}
+function loadDraft(){
+  const i=document.createElement('input');i.type='file';i.accept='.json';
+  i.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
+    r.onload=()=>{try{Object.assign(D,JSON.parse(r.result));location.hash='';apply();alert('انستعادت المسودة.')}catch(x){alert('الملف مش صالح.')}};
+    r.readAsText(f)};
+  i.click();
+}
+function apply(){
+  allQ().forEach(q=>{
+    const v=D[q.id];if(v==null)return;
+    if(q.ty==='text'||q.ty==='area'){const n=document.getElementById(q.id);if(n)n.value=v}
+    else if(q.ty==='radio'||q.ty==='check'){
+      document.querySelectorAll('[name="'+q.id+'"]').forEach(inp=>{
+        const on=q.ty==='radio'?inp.value===v:(v||[]).indexOf(inp.value)>=0;
+        inp.checked=on;inp.closest('label').classList.toggle('on',on)})}
+    else{
+      const box=document.getElementById('box_'+q.id);if(!box)return;
+      if(q.ty==='skills'||q.ty==='net'){box.querySelectorAll('[data-i]').forEach(n=>{
+        const o=v[+n.dataset.i];if(o)n.value=o[n.dataset.k]||''})}
+      else if(q.ty==='eng'){box.querySelectorAll('input').forEach(n=>{n.checked=(v[+n.dataset.i]===n.value)})}
+      else if(q.ty==='score'){box.querySelectorAll('select').forEach(n=>{
+        const row=v[+n.dataset.i];const x=row?row[+n.dataset.j]:null;n.value=(x==null?'':x);
+        n.classList.toggle('set',!!n.value)});calc()}
+    }
+  });
+  prog();
+}
+
+function showDone(){
+  doneShown=true;
+  document.getElementById('app').classList.add('hide');
+  document.querySelector('.foot').classList.add('hide');
+  document.querySelector('.bar').classList.add('hide');
+  document.querySelector('header').classList.add('hide');
+  document.body.style.paddingBottom='40px';
+  document.getElementById('after').innerHTML='';
+  const msg='مرحبا '+FADI_NAME+' 👋%0Aخلصت استمارة بكاسل والتقييم.%0Aالملف مرفق. 📎';
+  const d=el('<div class="card" id="done">'+
+    '<h2>✅ تمام — نزّلنا ملف إجاباتك</h2>'+
+    '<p style="color:var(--muted);font-size:15px;margin:10px 0 0">الملف انحفظ بمجلد التنزيلات باسمك.</p>'+
+    '<div class="note red" style="text-align:right;margin-top:18px">باقي خطوة وحدة بس — الملف ما بينبعت لحاله. لازم إنت تبعته.</div>'+
+    '<ol class="steps">'+
+    '<li>افتح واتساب على محادثة <b>'+FADI_NAME+'</b>.</li>'+
+    '<li>اضغط <b>📎 مرفق</b> ← <b>مستند / ملف</b>.</li>'+
+    '<li>اختار الملف <b>'+safeName()+'</b> من التنزيلات.</li>'+
+    '<li>ابعته. خلص. 🎯</li>'+
+    '</ol>'+
+    '<div style="display:flex;gap:9px;margin-top:20px;flex-wrap:wrap">'+
+    '<button class="bw" id="wa">افتح واتساب</button>'+
+    '<button class="b2" id="re">تنزيل الملف مرة تانية</button>'+
+    '</div>'+
+    '<p style="color:var(--muted);font-size:13px;margin-top:14px">لو ما فتح واتساب، ابعت الملف يدويًا لـ '+FADI_NAME+'.</p>'+
+    '</div>');
+  document.getElementById('after').appendChild(d);
+  document.getElementById('wa').onclick=()=>window.open('https://wa.me/'+FADI_WA+'?text='+msg,'_blank');
+  document.getElementById('re').onclick=()=>dl(buildMD(),safeName());
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+render();
+try{
+  const saved=localStorage.getItem(DRAFT_KEY);
+  if(saved&&confirm('لقينا مسودة محفوظة تلقائيًا من زيارة سابقة. بدك تكملها؟')){
+    Object.assign(D,JSON.parse(saved));apply();
+  }
+}catch(e){}
+</script>
+</body>
+</html>
