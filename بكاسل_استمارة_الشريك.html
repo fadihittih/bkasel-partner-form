@@ -56,6 +56,17 @@ label.opt.on{border-color:var(--ink);background:var(--soft);font-weight:500}
 .tbl input[type=text]{padding:7px 8px;font-size:14px;border-width:1px}
 .tbl select{padding:7px 4px;font-size:14px;border-width:1px;text-align:center}
 .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -6px;padding:0 6px}
+.leg{border:1px solid var(--line);border-radius:10px;padding:11px 13px;margin:2px 0 10px;background:var(--softer)}
+.leg .lg-h{font-size:12.5px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.leg .lg-r{display:flex;gap:9px;align-items:flex-start;padding:6px 0;border-top:1px dashed var(--line);
+  font-size:13px;color:var(--muted);line-height:1.6}
+.leg .lg-r:first-of-type{border-top:0;padding-top:0}
+.leg .lg-r b{background:var(--ink);color:#fff;border-radius:6px;min-width:22px;height:22px;flex:none;
+  display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;margin-top:1px}
+.leg.rng .lg-r b{min-width:46px;border-radius:8px;padding:0 7px;font-size:12px}
+h2 .tm{float:left;background:var(--soft);color:var(--muted);border-radius:999px;
+  padding:3px 10px;font-size:11.5px;font-weight:600;margin-top:3px}
+.tbl select[data-k="c"]{min-width:132px}
 .sc td:first-child{text-align:right;font-weight:600;font-size:13.5px;min-width:190px;background:#fff!important}
 .sc select{background:var(--soft);min-width:62px}
 .sc .res{font-weight:700;color:var(--ink);text-align:center;font-size:15px;background:var(--soft)!important}
@@ -113,7 +124,7 @@ button{font-family:inherit;font-weight:500;font-size:15px;border:0;border-radius
 </div></div>
 <header><div class="wrap">
   <h1>بكاسل — استمارة الشريك</h1>
-  <p>عبّيها لحالك · بصدق كامل · بدها 30–40 دقيقة</p>
+  <p>عبّيها لحالك · بصدق كامل · بدها 45–50 دقيقة · شغلك بينحفظ تلقائيًا</p>
 </div></header>
 <div class="wrap" id="app"></div>
 <div class="wrap" id="after"></div>
@@ -132,12 +143,14 @@ const SVC=[{"n": "أتمتة سير العمل بالذكاء الاصطناعي
 const F=[
 {s:"بياناتك",note:{t:"ليش هالاستمارة؟ لأننا على وشك نبني إشي مع بعض لسنين، وأكثر شي بيفشّل شركات الشركاء مش السوق — بل افتراضات ما حدا قالها بصوت عالي. واحد افترض إنو التاني رح يعطي 30 ساعة بالأسبوع، والتاني كان ناوي 8.",c:""},
  note2:{t:"قاعدة وحدة: الجواب المريح ما إله قيمة. لو ترددت تكتب إشي لأنه ممكن يزعج حدا فينا — فهذا بالضبط اللي لازم تكتبه.",c:"red"},
- q:[{id:"name",t:"اسمك",ty:"text",req:1},{id:"date",t:"تاريخ اليوم",ty:"text",ph:"مثال: 18/8/2026"}]},
+ q:[{id:"name",t:"اسمك",ty:"text",req:1},
+  {id:"wa",t:"رقم الواتساب",ty:"text",ph:"مثال: 0790000000",req:1},
+  {id:"date",t:"تاريخ اليوم",ty:"text",ph:"مثال: 18/8/2026"}]},
 
 {s:"1 · مين أنت تقنيًا (الواقع مش الشهادة)",q:[
  {id:"q1",t:"شو التخصص الجامعي وسنة التخرج المتوقعة؟",ty:"text",req:1},
- {id:"q2",t:"اكتب أكبر تلات أشياء بنيتها بإيدك فعليًا.",h:"مشروع تخرج، تطبيق، موقع، سكربت، بوت — أي إشي اشتغل. اذكر التقنية وكم أخد وقت.",ty:"area",req:1},
- {id:"q3",t:"قيّم حالك بصدق من 5 بكل بند.",h:"1 = ما جربته · 3 = بقدر بمساعدة يوتيوب · 5 = بقدر أبنيه لعميل وأتحمل مسؤوليته",ty:"skills",req:1},
+ {id:"q2",t:"اكتب أكبر تلات أشياء بنيتها بإيدك فعليًا.",h:"مشروع تخرج، تطبيق، موقع، سكربت، بوت — أي إشي اشتغل. اذكر التقنية وكم أخد وقت. الأشياء المبنية بمساعدة الـAI محسوبة بالكامل ومطلوبة — اذكرها بلا تردد، هيك بنشتغل أصلًا.",ty:"area",req:1},
+ {id:"q3",t:"قيّم حالك بصدق من 5 بكل بند.",h:"اقرأ سلّم الدرجات تحت قبل ما تقيّم — المبالغة هون بتنكشف بأول مشروع حقيقي.",ty:"skills",req:1},
  {id:"q4",t:"شو المهارة اللي بتستمتع فيها لدرجة إنك بتعملها بلا مقابل؟",h:"هاي غالبًا أفضل مؤشر على دورك المناسب — أكثر من أي تقييم رقمي.",ty:"area",req:1}]},
 
 {s:"2 · وقتك الحقيقي",note:{t:"⚠️ هذا أخطر سؤال بالاستمارة. الرقم المتفائل هون رح ينبنى عليه جدول كامل، وانهياره بعد شهرين رح ينحسب عليك. اكتب الرقم اللي بتقدر تلتزم فيه بأسوأ أسبوع، مش بأحسنه.",c:"red"},q:[
@@ -159,7 +172,7 @@ const F=[
 
 {s:"4 · شبكة معارفك",note:{t:"✅ أهم قسم على الإطلاق. أول عملائنا مش رح ييجوا من إعلان ولا من موقع — رح ييجوا من ناس منعرفهم بالاسم. قيمة شركتنا اليوم بتساوي مجموع هالقوائم الخمس.",c:"grn"},q:[
  {id:"q13",t:"اكتب كل شخص بتعرفه شخصيًا وعنده نشاط تجاري، أو بيشتغل بمكان بيقدر يوصلك لصاحب القرار.",
-  h:"أهل، أقارب، أصحاب، جيران، زملاء تدريب، دكاترة جامعة، أصحاب محلات بتتعامل معها. لا تفلتر ولا تحكم — اكتب الاسم ولو حسبته مش مناسب. عشر أسماء هو الحد الأدنى المطلوب منك.",ty:"net",req:1},
+  h:"أهل، أقارب، أصحاب، جيران، زملاء تدريب، دكاترة جامعة، أصحاب محلات بتتعامل معها. لا تفلتر ولا تحكم — اكتب الاسم ولو حسبته مش مناسب. عشر أسماء هو الحد الأدنى المطلوب منك. حدّد القطاع لكل اسم — من هون بنعرف على أي قطاع نبني.",ty:"net",req:1},
  {id:"q14",t:"من بين اللي كتبتهم: مين بتقدر تتصل فيه بكرا بلا حرج وتطلب منه 15 دقيقة؟",ty:"area",req:1}]},
 
 {s:"5 · البيع",note:{t:"خمس مبرمجين بلا شخص واحد مسؤوليته الوحيدة إحضار العملاء = خمس أشخاص بينتظروا الهاتف يرن. هذا الدور مش أقل قيمة من البرمجة — هو الأصعب والأهم بأول سنة.",c:""},q:[
@@ -168,7 +181,11 @@ const F=[
  {id:"q16",t:"سبق وأقنعت حدا بإشي أو بعت إشي (ولو بسيط)؟ احكي الموقف.",ty:"area",req:1},
  {id:"q17",t:"بترشّح حالك لدور مسؤول المبيعات والعلاقات (بلا تنفيذ تقني بأول شهور)؟",ty:"radio",req:1,
   o:["نعم، برشّح حالي","نعم بس بالمشاركة مع شريك تاني","لأ، بفضّل التنفيذ التقني","ما بعرف بعد"]},
- {id:"q18",t:"لو ما رشّح حدا حاله لهذا الدور — شو اقتراحك للحل؟",ty:"area",req:1}]},
+ {id:"q18",t:"لو ما رشّح حدا حاله لهذا الدور — شو اقتراحك للحل؟",ty:"area",req:1},
+ {id:"q30",t:"مستعد تشتغل على 3 عملاء بسعر رمزي مقابل دراسة حالة موثّقة؟",
+  h:"أول 3 حالات نجاح هي اللي بتفتح باب الأسعار الكاملة بعدها. ما في جواب غلط — بس جوابك بيحدد سرعة أول سنة.",ty:"radio",req:1,
+  o:["نعم، وهذا منطقي بأول شهور","نعم بس بسقف زمني واضح (مثلًا أول 3 شهور)","بفضّل سعر مخفّض مش رمزي","لأ، لازم ناخد سعرنا من أول يوم"]},
+ {id:"q31",t:"اشرح إجابتك السابقة بجملة.",ty:"area"}]},
 
 {s:"6 · اللغة والتواصل",q:[
  {id:"q19",t:"مستواك بالإنجليزي:",ty:"eng",req:1},
@@ -188,13 +205,27 @@ const F=[
  {id:"q26",t:"شو الدور اللي بدك ياه إنت، وشو الدور اللي بتظن إنك رح تأديه فعليًا؟",ty:"area",req:1},
  {id:"q27",t:"صار بيناتنا خلاف سابق بشغل مشترك؟ كيف انتهى؟",ty:"area"},
  {id:"q28",t:"لو انسحب حدا فينا بعد 3 شهور، شو بتشوفه عادل بخصوص حصته؟",ty:"area",req:1},
+ {id:"q32",t:"شو أكثر إشي بتكرهه بالشغل وبتأجّله دايمًا؟",
+  h:"متابعة العملاء؟ التوثيق؟ الاجتماعات؟ الرد على الرسايل؟ التفاصيل الصغيرة؟ اكتبه بصراحة — مين بيكره المتابعة ما بينفع يمسك حسابات العملاء مهما كان شاطر تقنيًا.",ty:"area",req:1},
  {id:"q29",t:"أي إشي تاني بدك تقوله وما سألت عنه الاستمارة؟",ty:"area"}]},
 
 {s:"9 · ورقة تقييم الخدمات",
  note:{t:"إحنا رح نختار على شو نبني الشركة. بدنا رأيك إنت — مش موافقتك على رأي غيري. لهيك ما في درجات جاهزة قدامك. قيّم كل خدمة من 1 لـ 10 على المعايير الخمسة، والنتيجة والترتيب بينحسبوا لحالهم.",c:"grn"},
- note2:{t:"مقياس الدرجات: 1-3 ضعيف · 4-6 متوسط · 7-8 قوي · 9-10 ممتاز. حاول ما تحط 7 لكل إشي — التمرين بيفيد لما تفرّق. ولو ما بتعرف خدمة، حط تقديرك وكمّل.",c:"red"},
+ note2:{t:"اقرأ سلّم الـ10 تحت قبل ما تبلّش. حاول ما تحط نفس الرقم لكل إشي — التمرين بيفيد لما تفرّق. ولو ما بتعرف خدمة، حط تقديرك وكمّل.",c:"red"},
  q:[{id:"score",t:"قيّم الـ20 خدمة",ty:"score",req:1}]}
 ];
+
+const MINS=["1 دقيقة","6 دقايق","4 دقايق","2 دقيقة","8 دقايق","5 دقايق","2 دقيقة","5 دقايق","6 دقايق","12 دقيقة"];
+F.forEach((sec,i)=>{sec.m=MINS[i]||''});
+
+const SECTORS=["عيادة / طبيب أسنان","مطعم أو كافيه","متجر تجزئة (محل)","متجر إلكتروني","عقارات",
+"مقاولات وصيانة","صالون وتجميل","تعليم ودورات","خدمات مهنية (محاماة / محاسبة)","سياحة وسفر",
+"لياقة ورياضة","سيارات وقطع غيار","شركة تقنية","مصنع أو تجارة جملة","جهة حكومية أو منظمة","أخرى"];
+
+const SCALE10=[["1–3","ضعيف — الطلب قليل أو العائد ضعيف أو بعيد عن قدراتنا"],
+["4–6","متوسط — ممكن نشتغلها بس مش مميزة ولا سريعة"],
+["7–8","قوي — طلب واضح وعائد منيح وقريبة من خلفيتنا"],
+["9–10","ممتاز — فرصة كبيرة ونقدر نبدأ فيها بسرعة"]];
 
 const SKILLS=["برمجة الويب (Frontend)","برمجة الخادم (Backend) وقواعد البيانات","Python وأتمتة المهام",
 "التعامل مع APIs و Webhooks","أدوات الأتمتة (n8n / Make / Zapier)","استخدام الذكاء الاصطناعي برمجيًا (APIs)",
@@ -202,6 +233,11 @@ const SKILLS=["برمجة الويب (Frontend)","برمجة الخادم (Backe
 "الكتابة والمحتوى بالعربي","الحكي والإقناع قدام الناس"];
 const ENG=["القراءة والفهم التقني","الكتابة (إيميل ومقترح لعميل)","المحادثة (اجتماع مع عميل أجنبي)"];
 const ENGL=["ضعيف","متوسط","جيد","ممتاز"];
+const SCALE=[[1,"ما جربته أبدًا"],
+[2,"جربته بمشروع تعليمي أو تمرين بس"],
+[3,"بقدر أطلّع إشي شغّال بمساعدة الـAI، بس ببطء وبعلق لما يصير عطل غريب"],
+[4,"بقدر أسلّم إشي شغّال بمساعدة الـAI وبحل معظم الأعطال لحالي"],
+[5,"بقدر أسلّمه لعميل، وأتحمل مسؤوليته، وأصلحه وأنا تحت ضغط"]];
 const D={};
 const DRAFT_KEY='bkasel_autosave';
 let doneShown=false;
@@ -223,7 +259,7 @@ function render(){
   const frag=document.createDocumentFragment();
   F.forEach((sec,si)=>{
     const c=document.createElement('div');c.className='card';
-    let h='<h2>'+esc(sec.s)+'</h2>';
+    let h='<h2>'+esc(sec.s)+(sec.m?'<span class="tm">⏱ '+esc(sec.m)+'</span>':'')+'</h2>';
     if(sec.note)h+='<div class="note '+(sec.note.c||'')+'">'+esc(sec.note.t)+'</div>';
     if(sec.note2)h+='<div class="note '+(sec.note2.c||'')+'">'+esc(sec.note2.t)+'</div>';
     c.innerHTML=h;
@@ -261,11 +297,13 @@ function qbox(q){
   }
   else if(q.ty==='skills'){
     D[q.id]=SKILLS.map(()=>({v:"",r:""}));
-    let t='<div class="scroll"><table class="tbl"><tr><th>المهارة</th><th>من 5</th><th>اشتغلت فيها بمشروع حقيقي؟</th></tr>';
+    let t='<div><div class="leg"><div class="lg-h">شو يعني كل درجة</div>'+
+      SCALE.map(x=>'<div class="lg-r"><b>'+x[0]+'</b><span>'+esc(x[1])+'</span></div>').join('')+'</div>';
+    t+='<div class="scroll"><table class="tbl"><tr><th>المهارة</th><th>من 5</th><th>اشتغلت فيها بمشروع حقيقي؟</th></tr>';
     SKILLS.forEach((s,i)=>{t+='<tr><td style="text-align:right;font-weight:600">'+esc(s)+'</td>'+
       '<td><select data-k="v" data-i="'+i+'"><option value="">—</option>'+[1,2,3,4,5].map(x=>'<option>'+x+'</option>').join('')+'</select></td>'+
       '<td><select data-k="r" data-i="'+i+'"><option value="">—</option><option>نعم</option><option>لأ</option></select></td></tr>'});
-    t+='</table></div>';n=el(t);
+    t+='</table></div></div>';n=el(t);
     n.querySelectorAll('select').forEach(s=>s.onchange=e=>{D[q.id][+e.target.dataset.i][e.target.dataset.k]=e.target.value;prog()});
   }
   else if(q.ty==='eng'){
@@ -277,10 +315,12 @@ function qbox(q){
     n.querySelectorAll('input').forEach(s=>s.onchange=e=>{D[q.id][+e.target.dataset.i]=e.target.value;prog()});
   }
   else if(q.ty==='net'){
-    D[q.id]=Array.from({length:12},()=>({n:"",b:"",s:"",p:""}));
-    let t='<div class="scroll"><table class="tbl"><tr><th>#</th><th>الاسم</th><th>النشاط / مكان العمل</th><th>صلتك فيه</th><th>قوة العلاقة</th></tr>';
+    D[q.id]=Array.from({length:12},()=>({n:"",c:"",b:"",s:"",p:""}));
+    let t='<div class="scroll"><table class="tbl"><tr><th>#</th><th>الاسم</th><th>القطاع</th><th>النشاط / مكان العمل</th><th>صلتك فيه</th><th>قوة العلاقة</th></tr>';
     for(let i=0;i<12;i++){t+='<tr><td style="text-align:center;font-weight:700;color:var(--muted)">'+(i+1)+'</td>'+
-      ['n','b','s'].map(k=>'<td><input type="text" data-k="'+k+'" data-i="'+i+'"></td>').join('')+
+      '<td><input type="text" data-k="n" data-i="'+i+'"></td>'+
+      '<td><select data-k="c" data-i="'+i+'"><option value="">—</option>'+SECTORS.map(x=>'<option>'+esc(x)+'</option>').join('')+'</select></td>'+
+      ['b','s'].map(k=>'<td><input type="text" data-k="'+k+'" data-i="'+i+'"></td>').join('')+
       '<td><select data-k="p" data-i="'+i+'"><option value="">—</option>'+[1,2,3,4,5].map(x=>'<option>'+x+'</option>').join('')+'</select></td></tr>'}
     t+='</table></div>';n=el(t);
     n.querySelectorAll('input,select').forEach(s=>s['on'+(s.tagName==='INPUT'?'input':'change')]=e=>{
@@ -289,6 +329,9 @@ function qbox(q){
   else if(q.ty==='score'){
     D[q.id]=SVC.map(()=>[null,null,null,null,null]);
     n=document.createElement('div');
+    n.appendChild(el('<div class="leg rng"><div class="lg-h">شو تعني الدرجة من 10</div>'+
+      SCALE10.map(x=>'<div class="lg-r"><b>'+x[0]+'</b><span>'+esc(x[1])+'</span></div>').join('')+'</div>'));
+    n.appendChild(el('<div class="miss hide" id="flatWarn">حاطط نفس الدرجة بأكثر من 15 خدمة على نفس المعيار — التمرين بيفيد لما تفرّق. مش إجبار، بس ارجع راجعها.</div>'));
     SVC.forEach((sv,i)=>{
       const card=document.createElement('div');card.className='svc';card.id='svc'+i;
       let h='<div class="sh"><span class="num">'+(i+1)+'</span><span>'+esc(sv.n)+'</span></div>'+
@@ -320,6 +363,17 @@ function calc(){
   });
   const valid=tot.filter(x=>x!==null).slice().sort((a,b)=>b-a);
   tot.forEach((v,i)=>{document.getElementById('rnk'+i).textContent=v===null?'—':(valid.indexOf(v)+1)});
+  const fw=document.getElementById('flatWarn');
+  if(fw)fw.classList.toggle('hide',!isFlat(S));
+}
+
+/* (6) نفس الدرجة بأكثر من 15 خدمة على نفس المعيار = تعبئة بلا تفكير */
+function isFlat(S){
+  return CRIT.some((c,j)=>{
+    const cnt={};let mx=0;
+    S.forEach(r=>{const x=r[j];if(x!==null&&x!==''){cnt[x]=(cnt[x]||0)+1;if(cnt[x]>mx)mx=cnt[x]}});
+    return mx>15;
+  });
 }
 
 function allQ(){const a=[];F.forEach(s=>s.q.forEach(q=>a.push(q)));return a}
@@ -367,12 +421,45 @@ function finish(){
 
 function cell(s){return String(s==null?'':s).replace(/\|/g,'\\|').replace(/\n/g,' ')}
 
+/* ===== (5) ملخص تنفيذي: كله محسوب من إجابات موجودة، بلا أسئلة زيادة ===== */
+function netRows(){return (D.q13||[]).filter(r=>r&&r.n&&r.n.trim())}
+function sectorCount(){
+  const cnt={};netRows().forEach(r=>{if(r.c)cnt[r.c]=(cnt[r.c]||0)+1});
+  return Object.entries(cnt).sort((a,b)=>b[1]-a[1]);
+}
+function nAsma(k){return k===1?'اسم واحد':k===2?'اسمين':(k<=10?k+' أسماء':k+' اسم')}
+function scoreRanked(){
+  const v=D.score||[];
+  return SVC.map((sv,i)=>({n:sv.n,r:v[i]||[],t:(v[i]||[]).every(x=>x!==null&&x!=='')?v[i].reduce((a,x,j)=>a+x*CRIT[j][1],0):null}))
+    .filter(x=>x.t!==null).sort((a,b)=>b.t-a.t);
+}
+function summaryMD(){
+  const L=[];const sc=sectorCount();const rk=scoreRanked();
+  L.push('## ملخص تنفيذي');L.push('');
+  L.push('| البند | الجواب |');L.push('|---|---|');
+  L.push('| الساعات الأسبوعية | '+cell(D.q5||'—')+' |');
+  L.push('| بيحط من ماله | '+cell(D.q10||'—')+' |');
+  L.push('| بيصمد بلا دخل | '+cell(D.q11||'—')+' |');
+  L.push('| الحد الأدنى الشهري للنجاح | '+cell(D.q12||'—')+' |');
+  L.push('| عدد الأسماء بالشبكة | '+netRows().length+' |');
+  L.push('| القطاع الأغلب | '+(sc.length?cell(sc[0][0])+' ('+nAsma(sc[0][1])+')':'—')+' |');
+  L.push('| أعلى 3 خدمات عنده | '+(rk.length?rk.slice(0,3).map((r,i)=>(i+1)+') '+cell(r.n)).join(' · '):'—')+' |');
+  L.push('| رشّح حاله للمبيعات | '+cell(D.q17||'—')+' |');
+  L.push('| مستعد لـ3 عملاء بسعر رمزي | '+cell(D.q30||'—')+' |');
+  L.push('| لو إجته وظيفة بعد 3 شهور | '+cell(D.q8||'—')+' |');
+  if(D.score&&isFlat(D.score))L.push('| ⚠️ تنبيه | حطّ نفس الدرجة بأكثر من 15 خدمة على نفس المعيار — راجع تقييمه بحذر |');
+  L.push('');L.push('---');L.push('');
+  return L;
+}
+
 function buildMD(){
   const L=[];
   L.push('# بكاسل — استمارة الشريك');L.push('');
   L.push('**الاسم:** '+(D.name||''));
+  L.push('**واتساب:** '+(D.wa||''));
   L.push('**التاريخ:** '+(D.date||''));
   L.push('');L.push('---');L.push('');
+  summaryMD().forEach(x=>L.push(x));
   F.forEach(sec=>{
     if(sec.s==='بياناتك')return;
     L.push('## '+sec.s);L.push('');
@@ -386,9 +473,15 @@ function buildMD(){
         L.push('| المهارة | المستوى |');L.push('|---|:---:|');
         ENG.forEach((s,i)=>L.push('| '+s+' | '+(v[i]||'—')+' |'));
       }else if(q.ty==='net'){
-        L.push('| # | الاسم | النشاط | الصلة | قوة العلاقة |');L.push('|:---:|---|---|---|:---:|');
-        let k=0;v.forEach(r=>{if(r.n&&r.n.trim()){k++;L.push('| '+k+' | '+cell(r.n)+' | '+cell(r.b||'')+' | '+cell(r.s||'')+' | '+cell(r.p||'')+' |')}});
-        L.push('');L.push('*مجموع الأسماء: '+k+'*');
+        L.push('| # | الاسم | القطاع | النشاط | الصلة | قوة العلاقة |');L.push('|:---:|---|---|---|---|:---:|');
+        let k=0;v.forEach(r=>{if(r.n&&r.n.trim()){k++;L.push('| '+k+' | '+cell(r.n)+' | '+cell(r.c||'—')+' | '+cell(r.b||'')+' | '+cell(r.s||'')+' | '+cell(r.p||'')+' |')}});
+        L.push('');L.push('*مجموع الأسماء: '+k+'*');L.push('');
+        const sc=sectorCount();
+        if(sc.length){
+          L.push('**توزيع القطاعات:**');L.push('');
+          L.push('| القطاع | عدد الأسماء |');L.push('|---|:---:|');
+          sc.forEach(x=>L.push('| '+cell(x[0])+' | '+x[1]+' |'));
+        }
       }else if(q.ty==='score'){
         const rows=SVC.map((s,i)=>({n:s.n,r:v[i],t:v[i].reduce((a,x,j)=>a+x*CRIT[j][1],0)}));
         const sorted=rows.slice().sort((a,b)=>b.t-a.t);
