@@ -108,6 +108,16 @@ button{font-family:inherit;font-weight:500;font-size:15px;border:0;border-radius
 .sf b{color:var(--ink);font-size:16px}
 .sf .rk b{color:var(--ok)}
 
+.wts{border:1.5px solid var(--line);border-radius:12px;padding:13px;background:#fff}
+.wts .row input{width:78px;flex:none;background:var(--softer);border:1.5px solid var(--line);
+  border-radius:9px;padding:9px 6px;font-size:15px;font-weight:700;text-align:center;color:var(--ink);
+  font-family:"Inter",sans-serif}
+.wts .row input.set{background:var(--soft);border-color:var(--ink)}
+.wtot{margin-top:11px;padding:11px 13px;border-radius:9px;display:flex;justify-content:space-between;
+  align-items:center;gap:10px;font-size:14px;font-weight:600;background:var(--warn-bg);color:var(--warn-text)}
+.wtot b{font-size:20px;font-family:"Inter",sans-serif;flex:none}
+.wtot.ok{background:var(--ok-bg);color:var(--ok)}
+
 .hide{display:none!important}
 #done{text-align:center;padding:26px 18px}
 #done h2{border:0;font-size:23px}
@@ -142,8 +152,9 @@ const FADI_WA = "962790266542";   // مثال: 962791234567
 const FADI_NAME = "فادي";
 /* ============================================================================= */
 
-const CRIT=[["حجم الطلب في السوق",.25],["العائد المالي / حجم الصفقة",.25],
-["ملاءمة خلفية البرمجة",.20],["سرعة الوصول لأول عميل",.15],["صعوبة التقليد (حصانة تنافسية)",.15]];
+const CRIT=[["حجم الطلب في السوق",.25,"حجم الطلب"],["العائد المالي / حجم الصفقة",.25,"العائد المالي"],
+["ملاءمة خلفية البرمجة",.20,"ملاءمة البرمجة"],["سرعة الوصول لأول عميل",.15,"سرعة أول عميل"],
+["صعوبة التقليد (حصانة تنافسية)",.15,"صعوبة التقليد"]];
 
 const SVC=[{"n": "أتمتة سير العمل بالذكاء الاصطناعي", "d": "ربط أنظمة الشركة (CRM، بريد، واتساب، محاسبة) بسير عمل آلي يقلل العمل اليدوي: فرز الطلبات، إدخال البيانات، التقارير التلقائية."}, {"n": "وكلاء ذكاء اصطناعي للمبيعات وخدمة العملاء", "d": "بناء مساعد ذكي مدرَّب على بيانات الشركة (RAG) يرد على العملاء، يؤهّل العملاء المحتملين، ويحوّل الجاهزين منهم لفريق المبيعات."}, {"n": "تحسين الظهور في محركات الذكاء الاصطناعي (GEO/AEO)", "d": "جعل العلامة التجارية تظهر كإجابة داخل ChatGPT و Perplexity و Gemini و Google AI Overviews عبر بناء الكيانات والسكيما والاستشهادات."}, {"n": "SEO التقني + استراتيجية المحتوى", "d": "تحسين البنية التقنية للموقع (السرعة، الفهرسة، Core Web Vitals) + خطة محتوى تستهدف نية الشراء وليس مجرد الزيارات."}, {"n": "إدارة الإعلانات المدفوعة (Meta / Google / TikTok)", "d": "تشغيل حملات أداء مربوطة بالمبيعات الفعلية مع تتبّع تحويلات دقيق ولوحة ربحية واضحة لكل قناة."}, {"n": "تحسين معدل التحويل (CRO) والاختبارات", "d": "رفع نسبة الزوار الذين يشترون عبر تحليل السلوك وتجارب A/B — يزيد الأرباح بدون زيادة ميزانية الإعلان."}, {"n": "بناء وتشغيل أنظمة CRM و RevOps", "d": "تركيب وضبط نظام إدارة علاقات العملاء وربط التسويق بالمبيعات: مراحل الصفقات، التنبيهات، لوحات القيادة، وتقارير الإيرادات."}, {"n": "تسويق دورة حياة العميل والبريد والأتمتة", "d": "سلاسل رسائل آلية (ترحيب، سلة متروكة، استرجاع) — أعلى عائد لكل دولار في التسويق الرقمي."}, {"n": "واتساب للأعمال والتجارة المحادثية", "d": "ربط WhatsApp Business API بالمتجر والـCRM: ردود آلية، إشعارات طلبات، استرجاع سلات، ودعم مباشر — القناة الأقوى في السوق العربي."}, {"n": "بناء وتحسين المتاجر الإلكترونية", "d": "إطلاق متجر احترافي على Shopify/سلة/زد أو مخصص، مع تحسين رحلة الشراء والدفع والشحن ومتابعة الأداء."}, {"n": "مواقع وصفحات هبوط عالية التحويل", "d": "تصميم وبرمجة مواقع وصفحات مبيعات سريعة ومهيأة للتحويل — البوابة الأسهل لأول عميل واستخدامها كمدخل لبيع خدمات أكبر."}, {"n": "التحليلات ونمذجة البيانات وإسناد المبيعات", "d": "بناء لوحات قيادة تربط كل دينار إنفاق تسويقي بالإيراد الفعلي، وتوحيد بيانات المصادر المتفرقة في مصدر حقيقة واحد."}, {"n": "توليد العملاء المحتملين للشركات (B2B Outbound)", "d": "بناء آلة عملاء محتملين: قوائم مستهدفة، بنية بريد بارد سليمة، تسلسلات متعددة القنوات، وحجز اجتماعات مؤهَّلة."}, {"n": "الفيديو القصير والمحتوى المرئي بالذكاء الاصطناعي", "d": "إنتاج ريلز وتيك توك بكميات كبيرة بمساعدة أدوات AI للتحرير والترجمة والاستنساخ الصوتي — الطلب هائل والتكلفة منخفضة."}, {"n": "الهوية البصرية وبناء العلامة التجارية", "d": "تصميم الهوية الكاملة (شعار، ألوان، خطوط، دليل استخدام، نبرة صوت) — مدخل ممتاز للعملاء الجدد لكن عائده مشروعي."}, {"n": "إدارة حسابات التواصل الاجتماعي (اشتراك شهري)", "d": "الخدمة الأكثر طلبًا والأسهل بيعًا محليًا، لكنها الأقل ربحية والأكثر منافسة — تُستخدم كباب دخول لا كأساس للشركة."}, {"n": "أنظمة الاحتفاظ بالعملاء وبرامج الولاء", "d": "تقليل نسبة فقدان العملاء عبر تحليل السلوك، تصنيف الشرائح (RFM)، برامج نقاط، وحملات استرجاع آلية."}, {"n": "تسويق وتحسين التطبيقات (ASO + Growth)", "d": "رفع ترتيب التطبيق في المتاجر، تحسين صفحة التطبيق، وربط حملات التثبيت بالإيراد داخل التطبيق."}, {"n": "تمكين الشركات وتدريبها على أدوات الذكاء الاصطناعي", "d": "ورش وتدريب عملي لفرق الشركات على استخدام AI في عملهم اليومي + كتيّب إجراءات مخصص — عائد عالٍ لكل ساعة وباب لعقود أتمتة."}, {"n": "خدمة مُنتَجة أو Micro-SaaS خاصة بكم", "d": "تحويل أكثر خدمة تكرّرت عندكم إلى أداة/اشتراك يُباع بلا وقت إضافي — الطريق الوحيد لكسر سقف 'الدخل مقابل الساعة'."}];
 
@@ -219,10 +230,13 @@ const F=[
 {s:"9 · ورقة تقييم الخدمات",
  note:{t:"إحنا رح نختار على شو نبني الشركة. بدنا رأيك إنت — مش موافقتك على رأي غيري. لهيك ما في درجات جاهزة قدامك. قيّم كل خدمة من 1 لـ 10 على المعايير الخمسة، والنتيجة والترتيب بينحسبوا لحالهم.",c:"grn"},
  note2:{t:"اقرأ سلّم الـ10 تحت قبل ما تبلّش. حاول ما تحط نفس الرقم لكل إشي — التمرين بيفيد لما تفرّق. ولو ما بتعرف خدمة، حط تقديرك وكمّل.",c:"red"},
- q:[{id:"score",t:"قيّم الـ20 خدمة",ty:"score",req:1}]}
+ q:[{id:"score",t:"قيّم الـ20 خدمة",ty:"score",req:1},
+  {id:"wts",t:"وزّع 100 نقطة على المعايير الخمسة حسب اللي بتشوفه الأهم لبكاسل",
+   h:"الأوزان اللي استعملناها فوق (25 / 25 / 20 / 15 / 15) اقتراح مني أنا — مش قانون. هون بدي وزنك إنت: لو تعارض معيارين، أي واحد بتقدّمه؟ حط الرقم اللي بتشوفه صح ولو اختلف عن اقتراحي تمامًا. المجموع لازم يساوي 100 بالضبط.",
+   ty:"wts",req:1}]}
 ];
 
-const MINS=["1 دقيقة","6 دقايق","4 دقايق","2 دقيقة","8 دقايق","5 دقايق","2 دقيقة","5 دقايق","6 دقايق","12 دقيقة"];
+const MINS=["1 دقيقة","6 دقايق","4 دقايق","2 دقيقة","8 دقايق","5 دقايق","2 دقيقة","5 دقايق","6 دقايق","14 دقيقة"];
 F.forEach((sec,i)=>{sec.m=MINS[i]||''});
 (function(){let n=0;F.forEach(sec=>sec.q.forEach(q=>{q.n=++n}))})();
 
@@ -372,6 +386,18 @@ function qbox(q){
       const t=e.target;t.classList.toggle('set',!!t.value);
       D[q.id][+t.dataset.i][+t.dataset.j]=t.value?+t.value:null;calc();prog()});
   }
+  else if(q.ty==='wts'){
+    D[q.id]=CRIT.map(()=>null);
+    n=el('<div class="wts"></div>');
+    CRIT.forEach((c,j)=>{n.appendChild(el('<div class="row"><span>'+esc(c[0])+'</span>'+
+      '<input type="text" inputmode="numeric" maxlength="3" placeholder="—" data-j="'+j+'"></div>'))});
+    n.appendChild(el('<div class="wtot" id="wtot"><span id="wlab">المجموع لازم يساوي 100</span><b id="wsum">0</b></div>'));
+    n.querySelectorAll('input').forEach(inp=>inp.oninput=e=>{
+      const t=e.target;let v=digits(t.value).slice(0,3);
+      if(v!==''&&+v>100)v='100';
+      t.value=v;t.classList.toggle('set',v!=='');
+      D[q.id][+t.dataset.j]=v===''?null:+v;wtot();prog()});
+  }
   w.appendChild(n);
   w.appendChild(el('<div class="errmsg" id="err_'+q.id+'">هذا السؤال مطلوب</div>'));
   return w;
@@ -401,6 +427,23 @@ function isFlat(S){
   });
 }
 
+/* الأرقام العربية-الهندية (٠١٢) بتنكتب من كيبورد الموبايل — منحوّلها لأرقام لاتينية */
+function digits(s){
+  return String(s==null?'':s)
+    .replace(/[\u0660-\u0669]/g,c=>c.charCodeAt(0)-0x0660)
+    .replace(/[\u06F0-\u06F9]/g,c=>c.charCodeAt(0)-0x06F0)
+    .replace(/[^\d]/g,'');
+}
+function wsum(){return (D.wts||[]).reduce((a,x)=>a+(x||0),0)}
+function wtot(){
+  const t=document.getElementById('wtot');if(!t)return;
+  const s=wsum(),ok=s===100;
+  document.getElementById('wsum').textContent=s;
+  document.getElementById('wlab').textContent=
+    ok?'المجموع 100 — تمام ✓':(s<100?'ناقص '+(100-s)+' نقطة':'زيادة '+(s-100)+' نقطة');
+  t.classList.toggle('ok',ok);
+}
+
 function allQ(){const a=[];F.forEach(s=>s.q.forEach(q=>a.push(q)));return a}
 
 function filled(q){
@@ -409,6 +452,7 @@ function filled(q){
   if(q.ty==='eng')return v&&v.filter(Boolean).length===3;
   if(q.ty==='net')return v&&v.filter(x=>x.n&&x.n.trim()).length>=10;
   if(q.ty==='score')return v&&v.filter(r=>r.every(x=>x!==null&&x!=='')).length===SVC.length;
+  if(q.ty==='wts')return v&&v.every(x=>x!==null&&x!=='')&&wsum()===100;
   if(q.ty==='check')return v&&v.length>0;
   return v&&String(v).trim().length>0;
 }
@@ -430,6 +474,7 @@ function finish(){
       e.style.display='block';
       e.textContent = q.ty==='net' ? 'لازم 10 أسماء على الأقل — هذا القسم اللي بينتج عملاء'
         : q.ty==='score' ? 'لازم تقيّم الـ20 خدمة كاملة على المعايير الخمسة'
+        : q.ty==='wts' ? 'المجموع لازم يساوي 100 بالضبط — حاليًا '+wsum()
         : q.ty==='skills' ? 'قيّم 8 مهارات على الأقل'
         : 'هذا السؤال مطلوب';}});
     const m=el('<div class="miss">في '+bad.length+' سؤال ناقص. الأسئلة الناقصة معلّمة بالأحمر فوق.</div>');
@@ -469,6 +514,7 @@ function summaryMD(){
   L.push('| عدد الأسماء بالشبكة | '+netRows().length+' |');
   L.push('| القطاع الأغلب | '+(sc.length?cell(sc[0][0])+' ('+nAsma(sc[0][1])+')':'—')+' |');
   L.push('| أعلى 3 خدمات عنده | '+(rk.length?rk.slice(0,3).map((r,i)=>(i+1)+') '+cell(r.n)).join(' · '):'—')+' |');
+  L.push('| أوزانه للمعايير (من 100) | '+(D.wts&&D.wts.every(x=>x!=null)?CRIT.map((c,j)=>cell(c[2])+' '+D.wts[j]).join(' · '):'—')+' |');
   L.push('| رشّح حاله للمبيعات | '+cell(D.q17||'—')+' |');
   L.push('| مستعد لـ3 عملاء بسعر رمزي | '+cell(D.q30||'—')+' |');
   L.push('| لو إجته وظيفة بعد 3 شهور | '+cell(D.q8||'—')+' |');
@@ -523,6 +569,13 @@ function buildMD(){
         L.push('**أعلى 5 خدمات عندي:** '+sorted.slice(0,5).map((r,i)=>(i+1)+') '+r.n).join(' · '));
         L.push('');
         L.push('**أدنى 3 خدمات عندي:** '+sorted.slice(-3).map(r=>r.n).join(' · '));
+      }else if(q.ty==='wts'){
+        L.push('| المعيار | نقاطه | الوزن اللي استعملناه |');L.push('|---|:---:|:---:|');
+        CRIT.forEach((c,j)=>L.push('| '+c[0]+' | '+(v[j]==null?'—':v[j])+' | '+Math.round(c[1]*100)+' |'));
+        L.push('| **المجموع** | **'+wsum()+'** | **100** |');
+        L.push('');
+        const wr=CRIT.map((c,j)=>({n:c[2],v:v[j]==null?-1:v[j]})).sort((a,b)=>b.v-a.v);
+        L.push('**الأهم عنده:** '+wr[0].n+' ('+wr[0].v+') · **الأقل عنده:** '+wr[wr.length-1].n+' ('+wr[wr.length-1].v+')');
       }else if(q.ty==='check'){
         (v&&v.length?v:['—']).forEach(x=>L.push('- '+x));
       }else{
@@ -584,6 +637,8 @@ function apply(){
       if(q.ty==='skills'||q.ty==='net'){box.querySelectorAll('[data-i]').forEach(n=>{
         const o=v[+n.dataset.i];if(o)n.value=o[n.dataset.k]||''})}
       else if(q.ty==='eng'){box.querySelectorAll('input').forEach(n=>{n.checked=(v[+n.dataset.i]===n.value)})}
+      else if(q.ty==='wts'){box.querySelectorAll('input').forEach(n=>{
+        const x=v[+n.dataset.j];n.value=(x==null?'':x);n.classList.toggle('set',n.value!=='')});wtot()}
       else if(q.ty==='score'){box.querySelectorAll('select').forEach(n=>{
         const row=v[+n.dataset.i];const x=row?row[+n.dataset.j]:null;n.value=(x==null?'':x);
         n.classList.toggle('set',!!n.value)});calc()}
