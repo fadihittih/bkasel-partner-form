@@ -35,7 +35,10 @@ h2 small{display:block;font-size:13px;color:var(--muted);font-weight:400;border:
 .q:first-of-type{border-top:0;padding-top:0}
 .q .t{font-weight:500;font-size:16px;margin-bottom:3px}
 .q .t b{color:var(--warn)}
-.q .h{font-size:13.5px;color:var(--muted);margin-bottom:9px;line-height:1.65}
+.q .t .qn{display:inline-block;min-width:25px;height:25px;line-height:25px;text-align:center;
+  border-radius:8px;background:var(--soft);color:var(--muted);font-size:12.5px;font-weight:700;
+  margin-left:9px;padding:0 6px;vertical-align:2px;font-family:"Inter",sans-serif}
+.q .h{font-size:13.5px;color:var(--muted);margin-bottom:9px;line-height:1.65;padding-right:34px}
 input[type=text],textarea,select{width:100%;border:1.5px solid var(--line);border-radius:8px;
   padding:11px 12px;font-family:inherit;font-size:15.5px;background:var(--softer);color:var(--ink);outline:none}
 textarea{min-height:88px;resize:vertical;line-height:1.75}
@@ -217,6 +220,7 @@ const F=[
 
 const MINS=["1 دقيقة","6 دقايق","4 دقايق","2 دقيقة","8 دقايق","5 دقايق","2 دقيقة","5 دقايق","6 دقايق","12 دقيقة"];
 F.forEach((sec,i)=>{sec.m=MINS[i]||''});
+(function(){let n=0;F.forEach(sec=>sec.q.forEach(q=>{q.n=++n}))})();
 
 const SECTORS=["عيادة / طبيب أسنان","مطعم أو كافيه","متجر تجزئة (محل)","متجر إلكتروني","عقارات",
 "مقاولات وصيانة","صالون وتجميل","تعليم ودورات","خدمات مهنية (محاماة / محاسبة)","سياحة وسفر",
@@ -279,7 +283,7 @@ function render(){
 
 function qbox(q){
   const w=document.createElement('div');w.className='q';w.id='box_'+q.id;
-  let h='<div class="t">'+esc(q.t)+(q.req?' <b>*</b>':'')+'</div>';
+  let h='<div class="t"><span class="qn">'+q.n+'</span>'+esc(q.t)+(q.req?' <b>*</b>':'')+'</div>';
   if(q.h)h+='<div class="h">'+esc(q.h)+'</div>';
   w.innerHTML=h;
   let n;
@@ -464,7 +468,7 @@ function buildMD(){
     if(sec.s==='بياناتك')return;
     L.push('## '+sec.s);L.push('');
     sec.q.forEach(q=>{
-      L.push('**'+q.t+'**');L.push('');
+      L.push('**'+q.n+'. '+q.t+'**');L.push('');
       const v=D[q.id];
       if(q.ty==='skills'){
         L.push('| المهارة | من 5 | مشروع حقيقي؟ |');L.push('|---|:---:|:---:|');
