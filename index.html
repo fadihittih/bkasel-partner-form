@@ -70,6 +70,10 @@ label.opt.on{border-color:var(--ink);background:var(--soft);font-weight:500}
 h2 .tm{float:left;background:var(--soft);color:var(--muted);border-radius:999px;
   padding:3px 10px;font-size:11.5px;font-weight:600;margin-top:3px}
 .tbl select[data-k="c"]{min-width:132px}
+.rmap{margin:0 0 10px}
+.rmap .rh{font-size:12.5px;font-weight:700;color:var(--ink);margin-bottom:0}
+.rmap .tbl td:first-child{font-weight:600;white-space:nowrap;background:var(--soft)}
+.rmap .tbl tr:nth-child(even) td:first-child{background:var(--soft)}
 .sc td:first-child{text-align:right;font-weight:600;font-size:13.5px;min-width:190px;background:#fff!important}
 .sc select{background:var(--soft);min-width:62px}
 .sc .res{font-weight:700;color:var(--ink);text-align:center;font-size:15px;background:var(--soft)!important}
@@ -205,7 +209,7 @@ const F=[
 {s:"8 · نحنا كفريق",q:[
  {id:"q25",t:"مين بتشوفه الأنسب لدور المدير التنفيذي (اللي بيحسم عند الخلاف)؟ وليش؟",
   h:"بتقدر ترشّح حالك. الدور مش امتياز — هو مسؤولية الحسم لما يطوّل النقاش.",ty:"area",req:1},
- {id:"q26",t:"شو الدور اللي بدك ياه إنت، وشو الدور اللي بتظن إنك رح تأديه فعليًا؟",ty:"area",req:1},
+ {id:"q26",t:"شو الدور اللي بدك ياه إنت، وشو الدور اللي بتظن إنك رح تأديه فعليًا؟",pre:"roles",ty:"area",req:1},
  {id:"q27",t:"صار بيناتنا خلاف سابق بشغل مشترك؟ كيف انتهى؟",ty:"area"},
  {id:"q28",t:"لو انسحب حدا فينا بعد 3 شهور، شو بتشوفه عادل بخصوص حصته؟",ty:"area",req:1},
  {id:"q32",t:"شو أكثر إشي بتكرهه بالشغل وبتأجّله دايمًا؟",
@@ -235,6 +239,13 @@ const SKILLS=["برمجة الويب (Frontend)","برمجة الخادم (Backe
 "التعامل مع APIs و Webhooks","أدوات الأتمتة (n8n / Make / Zapier)","استخدام الذكاء الاصطناعي برمجيًا (APIs)",
 "قواعد البيانات و SQL","التصميم وواجهات المستخدم","التسويق الرقمي والإعلانات","تحليل البيانات ولوحات التقارير",
 "الكتابة والمحتوى بالعربي","الحكي والإقناع قدام الناس"];
+const ROLES=[["مهندس الأتمتة والذكاء الاصطناعي","أتمتة سير العمل · وكلاء AI · واتساب للأعمال"],
+["مهندس النمو","SEO · GEO/AEO · CRO · الإعلانات"],
+["مهندس المنتج والويب","المواقع وصفحات الهبوط · المتاجر · المنتج"],
+["محلل البيانات والأنظمة","التحليلات · CRM/RevOps · الاحتفاظ بالعملاء"],
+["مسؤول المبيعات والحسابات","توليد العملاء · العروض · إدارة العلاقات"]];
+const ROLES_N1="هاي خريطة مش قائمة اختيار. فيك تكتب دور مش موجود فيها، أو تكتب إنك بدك اتنين، أو تكتب إنك ما بتشوف حالك بولا واحد — وهذا جواب مفيد مش جواب ناقص.";
+const ROLES_N2="والأربعة الأولى بيبنوا، والخامس بيبيع. الخامس مش أقل قيمة — هو الأصعب والأهم بأول سنة، وبلاه الأربعة بينتظروا الهاتف يرن.";
 const ENG=["القراءة والفهم التقني","الكتابة (إيميل ومقترح لعميل)","المحادثة (اجتماع مع عميل أجنبي)"];
 const ENGL=["ضعيف","متوسط","جيد","ممتاز"];
 const SCALE=[[1,"ما جربته أبدًا"],
@@ -281,9 +292,19 @@ function render(){
   prog();
 }
 
+function rolesMap(){
+  return '<div class="rmap"><div class="rh">خريطة الأدوار في بكاسل</div>'+
+    '<div class="scroll"><table class="tbl"><tr><th>الدور</th><th>بيملك</th></tr>'+
+    ROLES.map(r=>'<tr><td>'+esc(r[0])+'</td><td>'+esc(r[1])+'</td></tr>').join('')+
+    '</table></div></div>'+
+    '<div class="note">'+esc(ROLES_N1)+'</div>'+
+    '<div class="note grn">'+esc(ROLES_N2)+'</div>';
+}
+
 function qbox(q){
   const w=document.createElement('div');w.className='q';w.id='box_'+q.id;
-  let h='<div class="t"><span class="qn">'+q.n+'</span>'+esc(q.t)+(q.req?' <b>*</b>':'')+'</div>';
+  let h=q.pre==='roles'?rolesMap():'';
+  h+='<div class="t"><span class="qn">'+q.n+'</span>'+esc(q.t)+(q.req?' <b>*</b>':'')+'</div>';
   if(q.h)h+='<div class="h">'+esc(q.h)+'</div>';
   w.innerHTML=h;
   let n;
@@ -468,6 +489,12 @@ function buildMD(){
     if(sec.s==='بياناتك')return;
     L.push('## '+sec.s);L.push('');
     sec.q.forEach(q=>{
+      if(q.pre==='roles'){
+        L.push('**خريطة الأدوار في بكاسل**');L.push('');
+        L.push('| الدور | بيملك |');L.push('|---|---|');
+        ROLES.forEach(r=>L.push('| '+r[0]+' | '+r[1]+' |'));
+        L.push('');L.push('> '+ROLES_N1);L.push('>');L.push('> '+ROLES_N2);L.push('');
+      }
       L.push('**'+q.n+'. '+q.t+'**');L.push('');
       const v=D[q.id];
       if(q.ty==='skills'){
