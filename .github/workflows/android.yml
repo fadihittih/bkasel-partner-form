@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write  # needed only to publish the APK to the apk-builds branch
 
 jobs:
   build:
@@ -45,3 +45,17 @@ jobs:
           name: HealthSync-apk
           path: android/app/build/HealthSync-debug.apk
           retention-days: 30
+
+      # Also publish the APK to a separate "apk-builds" branch (one commit, overwritten
+      # each build) so it can be fetched with plain git, without artifact storage access.
+      - name: Publish APK to apk-builds branch
+        if: github.event_name != 'pull_request'
+        run: |
+          mkdir -p /tmp/publish && cp app/build/HealthSync-debug.apk /tmp/publish/
+          cd /tmp/publish
+          echo "Built from ${GITHUB_SHA} on ${GITHUB_REF_NAME}" > BUILD_INFO.txt
+          git init -q -b apk-builds
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add . && git commit -q -m "APK from ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" apk-builds
