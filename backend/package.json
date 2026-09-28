@@ -1,0 +1,25 @@
+{
+  "name": "health-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Receives Health Connect data from the Android app and stores it in MySQL.",
+  "type": "module",
+  "main": "dist/server.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "tsc && node --env-file=.env dist/server.js",
+    "test": "tsc && node --test dist/*.test.js"
+  },
+  "dependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.0.0",
+    "express": "^5.2.1",
+    "mysql2": "^3.24.4",
+    "typescript": "~5.9.3",
+    "zod": "^4.6.5"
+  }
+}

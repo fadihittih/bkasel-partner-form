@@ -12,8 +12,8 @@ Single-user, personal project.
 | 1 | Android app: read sleep/HR/steps/exercise, 7-day counts, manual sync | ✅ `android/` |
 | 3 | Background hourly sync with Health Connect changes tokens | ✅ `android/` (built together with step 1) |
 | – | Mock ingest endpoint for testing the app | ✅ `mock-server/` |
-| 2 | Backend storage + push endpoint + deployment | next |
-| 4 | MCP server (Streamable HTTP) + Claude connector | after that |
+| 2 | Backend storage + push endpoint + deployment (Hostinger) | ✅ `backend/` |
+| 4 | MCP server (Streamable HTTP) + Claude connector | next |
 
 ## Repository layout
 
@@ -34,7 +34,17 @@ android/                         Android app (Kotlin, Jetpack Compose)
     PermissionsRationaleActivity.kt  privacy policy screen Health Connect requires
   app/src/main/res/xml/network_security_config.xml  HTTPS only (except 127.0.0.1 for adb testing)
 mock-server/mock_server.py       fake /api/v1/ingest that prints counts only
+backend/                         Node.js + TypeScript + Express + MySQL
+  src/server.ts                  entry point: config, create tables, listen
+  src/config.ts                  environment variables (fails fast if missing)
+  src/db.ts                      MySQL pool + table definitions (created automatically)
+  src/auth.ts                    constant-time bearer token check
+  src/ingest.ts                  payload validation (zod) + idempotent upserts
+  src/app.ts                     routes: /health, POST /api/v1/ingest, GET /api/v1/status
+  src/app.test.ts                integration tests against a real MySQL/MariaDB
+  .env.example                   the environment variables to set
 .github/workflows/android.yml    builds the APK on GitHub (download from the run's Artifacts)
+.github/workflows/backend.yml    runs the backend tests against MySQL 8
 ```
 
 ## Permissions the app asks for
@@ -106,6 +116,77 @@ light, deep, rem). Any other code is sent as `"unknown"` with its `stage_code`.
 6. Press **Sync now** again. Only changes since the last sync are sent, usually a small batch or nothing.
 
 Background sync runs about every 60 minutes when there's network. Android may delay it (Doze, battery saver).
+
+## Backend (step 2)
+
+**Why Node/TypeScript:** your Hostinger plan runs Node.js apps, not Python. The official MCP TypeScript SDK
+(step 4) plugs into the same Express app. The only runtime dependencies are Express, mysql2 and zod,
+all pure JavaScript, so there's nothing native to compile on shared hosting.
+
+**Why MySQL, not SQLite:** Hostinger overwrites the app's files on every deploy, so a database file
+kept next to the app would be wiped. Every Hostinger plan includes MySQL.
+
+### Tables
+
+| Table | Key | Notes |
+|---|---|---|
+| `sleep_sessions` | `id` (Health Connect ID) | start, end, `duration_min`, origin |
+| `sleep_stages` | (`session_id`, `start_time`) | stage_type light/deep/rem/…; replaced whenever the session is re-sent; deleted with the session |
+| `heart_rate_samples` | (`record_id`, `sample_time`) | one row per sample; **indexed on `sample_time`**; a re-sent record replaces its samples |
+| `steps` | `id` | start, end, count, origin |
+| `exercise_sessions` | `id` | optional; stays empty if Mi Fitness doesn't write any |
+| `ingest_log` | auto | time + counts of each upload (no health values) |
+
+All times are stored in UTC. They're converted to Asia/Amman when summarised (step 4).
+Uploads are upserts inside a transaction, so repeated or partial syncs never create duplicates.
+
+### Endpoints
+
+| Method | Path | Auth | |
+|---|---|---|---|
+| GET | `/health` | none | `{"ok":true}` (no data) |
+| POST | `/api/v1/ingest` | Bearer | upload from the app (format above) |
+| GET | `/api/v1/status` | Bearer | row counts + last 5 uploads, to check syncing |
+
+Requests forwarded over plain HTTP are refused. Logs contain counts and error types only, never bodies.
+
+### Deploy on Hostinger (Business web hosting or higher)
+
+1. **Create the database:** hPanel → *Databases → MySQL Databases*. Create a database, user and strong password,
+   and note the full names (they look like `u123456789_health`). The host is the one hPanel shows,
+   usually `localhost`.
+2. **Generate the API token** (on your computer): `openssl rand -hex 32`. Keep it; the app needs it too.
+3. **Create the Node.js app:** hPanel → *Websites → Add website → Node.js Apps* → *Import Git repository*.
+   Connect GitHub and pick this repo and branch, then set:
+   - Root directory: `backend`
+   - Node version: 22 (20+ works)
+   - Build command: `npm run build`
+   - Entry file: `dist/server.js`
+4. **Environment variables** (in the same screen, or later under *Environment variables*):
+   `API_TOKEN`, `DB_HOST`, `DB_PORT=3306`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `NODE_ENV=production`.
+   Don't set `PORT`; Hostinger provides it.
+5. **Domain:** attach a subdomain such as `health.yourdomain.com`. Hostinger issues the SSL certificate.
+   Turn on **Force HTTPS** for it.
+6. **Deploy**, then check:
+   ```bash
+   curl https://health.yourdomain.com/health                     # {"ok":true}
+   curl -H "Authorization: Bearer $TOKEN" https://health.yourdomain.com/api/v1/status
+   ```
+   Tables are created automatically on first start.
+7. **Connect the phone:** in Health Sync, set Server URL `https://health.yourdomain.com` and the token, then
+   **Save → Sync now**. Call `/api/v1/status` again and the counts should go up.
+
+To update: push to the branch, then *Redeploy* in hPanel (or enable auto-deploy). The data stays in MySQL.
+
+### Run and test locally
+
+```bash
+cd backend
+cp .env.example .env        # fill in a local MySQL/MariaDB and a token
+npm install
+npm run dev                 # http://localhost:3000
+DB_USER=... DB_PASSWORD=... DB_NAME=scratch_db npm test   # drops and recreates the tables in that DB!
+```
 
 ## Building yourself
 
