@@ -1,5 +1,5 @@
 # Builds the Android APK on every push that touches android/, and on demand.
-# Download it from the run's "Artifacts" section.
+# The APK (minified release, signed with a cached key) is downloadable from the run's "Artifacts" section.
 name: Android APK
 
 on:
@@ -34,16 +34,16 @@ jobs:
           path: ~/.android/debug.keystore
           key: debug-keystore-v1
 
-      - name: Build debug APK
-        run: ./gradlew --no-daemon assembleDebug
+      - name: Build release APK (minified)
+        run: ./gradlew --no-daemon assembleRelease
 
       - name: Rename APK
-        run: cp app/build/outputs/apk/debug/app-debug.apk app/build/HealthSync-debug.apk
+        run: cp app/build/outputs/apk/release/app-release.apk app/build/HealthSync.apk
 
       - uses: actions/upload-artifact@v4
         with:
           name: HealthSync-apk
-          path: android/app/build/HealthSync-debug.apk
+          path: android/app/build/HealthSync.apk
           retention-days: 30
 
       # Also publish the APK to a separate "apk-builds" branch (one commit, overwritten
@@ -51,7 +51,7 @@ jobs:
       - name: Publish APK to apk-builds branch
         if: github.event_name != 'pull_request'
         run: |
-          mkdir -p /tmp/publish && cp app/build/HealthSync-debug.apk /tmp/publish/
+          mkdir -p /tmp/publish && cp app/build/HealthSync.apk /tmp/publish/
           cd /tmp/publish
           echo "Built from ${GITHUB_SHA} on ${GITHUB_REF_NAME}" > BUILD_INFO.txt
           git init -q -b apk-builds

@@ -20,7 +20,7 @@ android {
     }
 
     // Optional release signing. CI provides these as env vars (from GitHub secrets)
-    // so the key never lives in the repo. Without them, only the debug APK is built.
+    // so the key never lives in the repo. Without them, release is signed with the debug key.
     val keystorePath = System.getenv("SIGNING_KEYSTORE_PATH")
     signingConfigs {
         if (keystorePath != null) {
@@ -35,8 +35,12 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
-            if (keystorePath != null) signingConfig = signingConfigs.getByName("release")
+            // R8 shrinks the APK from ~30 MB to a few MB and strips debug info.
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            // Real release key if CI provides one, else the (cached) debug key so it installs.
+            signingConfig = signingConfigs.getByName(if (keystorePath != null) "release" else "debug")
         }
     }
 
