@@ -1,0 +1,61 @@
+# Builds the Android APK on every push that touches android/, and on demand.
+# The APK (minified release, signed with a cached key) is downloadable from the run's "Artifacts" section.
+name: Android APK
+
+on:
+  push:
+    paths: ["android/**", ".github/workflows/android.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write  # needed only to publish the APK to the apk-builds branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: android
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      # Keep the same debug signing key between builds so updates install over
+      # the previous version (Android refuses updates signed with a different key).
+      - name: Restore debug keystore
+        uses: actions/cache@v4
+        with:
+          path: ~/.android/debug.keystore
+          key: debug-keystore-v1
+
+      - name: Build release APK (minified)
+        run: ./gradlew --no-daemon assembleRelease
+
+      - name: Rename APK
+        run: cp app/build/outputs/apk/release/app-release.apk app/build/HealthSync.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: HealthSync-apk
+          path: android/app/build/HealthSync.apk
+          retention-days: 30
+
+      # Also publish the APK to a separate "apk-builds" branch (one commit, overwritten
+      # each build) so it can be fetched with plain git, without artifact storage access.
+      - name: Publish APK to apk-builds branch
+        if: github.event_name != 'pull_request'
+        run: |
+          mkdir -p /tmp/publish && cp app/build/HealthSync.apk /tmp/publish/
+          cd /tmp/publish
+          echo "Built from ${GITHUB_SHA} on ${GITHUB_REF_NAME}" > BUILD_INFO.txt
+          git init -q -b apk-builds
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add . && git commit -q -m "APK from ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" apk-builds
